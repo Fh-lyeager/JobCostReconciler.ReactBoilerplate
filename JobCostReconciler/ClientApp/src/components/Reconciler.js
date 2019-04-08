@@ -7,10 +7,15 @@ export class Reconciler extends Component {
         super(props);
         this.state = { jobSummary: [], loading: true };
         this.getJobSummary = this.getJobSummary.bind(this);
+
+        //this.textjobnumber = this.textjobnumber.bind(this);
     }
 
+
     getJobSummary() {
-        fetch('api/Job/JobTotals')
+        var jobNumber = this.textjobnumber;
+
+        fetch('api/Job/JobTotals/'+jobNumber)
             .then(response => response.json())
             .then(data => {
                 this.setState({ jobSummary: data, loading: false });
@@ -61,7 +66,7 @@ export class Reconciler extends Component {
 
                 <div>
                     <label>
-                        <input type="text" name="jobnumber" /> &nbsp;
+                        <input type="text" name="textjobnumber" /> &nbsp;
                         <button className="btn btn-primary" onClick={this.getJobSummary}>Get Job Details</button>
                     </label>
                 </div>
