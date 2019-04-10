@@ -1,0 +1,42 @@
+.mobile-nav {
+  display: flex;
+  margin: 0.5rem;
+}
+
+.mobile-nav__title {
+  margin: 0 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-nav__swipeable {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 5px;
+}
+
+.burger-button {
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.burger-button__bar {
+  background-color: #fff;
+  border-radius: 1px;
+  height: 0.22rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-nav {
+    display: none;
+  }
+}
