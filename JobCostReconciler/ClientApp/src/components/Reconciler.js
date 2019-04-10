@@ -7,8 +7,6 @@ export class Reconciler extends Component {
         super(props);
         this.state = { jobSummary: [], loading: true };
         this.getJobSummary = this.getJobSummary.bind(this);
-
-        //this.textjobnumber = this.textjobnumber.bind(this);
     }
 
 

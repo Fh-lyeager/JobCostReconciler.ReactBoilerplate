@@ -1,21 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
 
-//import App from './App';
-import App from "./layout/App";
-import configureStore from "./redux/configureStore";
+// core components
+import Admin from "layouts/Admin.jsx";
+import RTL from "layouts/RTL.jsx";
 
-//const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-//const rootElement = document.getElementById('root');
+import "assets/css/material-dashboard-react.css?v=1.6.0";
 
-// Use browser history in this application
-const browserHistory = createBrowserHistory();
-
-// Create store with reducers and middleware
-const store = configureStore(browserHistory);
+const hist = createBrowserHistory();
 
 ReactDOM.render(
-    <App history={browserHistory} store={store} />,
+    <Router history={hist}>
+        <Switch>
+            <Route path="/admin" component={Admin} />
+            <Route path="/rtl" component={RTL} />
+            <Redirect from="/" to="/admin/dashboard" />
+        </Switch>
+    </Router>,
     document.getElementById("root")
 );
