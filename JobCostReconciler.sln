@@ -7,7 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobCostReconciler", "JobCos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobCostReconciliation", "JobCostReconciliation\JobCostReconciliation.csproj", "{4A9DFDA1-8458-4A62-AFC2-6DC41A298193}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobCostReconciliation.UI", "JobCostReconciliation.UI\JobCostReconciliation.UI.csproj", "{ABA31974-4530-487E-B3BF-FB302475F750}"
+# Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobCostReconciliation.UI", "JobCostReconciliation.UI\JobCostReconciliation.UI.csproj", "{ABA31974-4530-487E-B3BF-FB302475F750}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobCostReconciliation.UI", "JobCostReconciliation.UI\JobCostReconciliation.UI.csproj", "{A0A24748-10AC-4BDD-8468-9A678F622585}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +24,10 @@ Global
 		{4A9DFDA1-8458-4A62-AFC2-6DC41A298193}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A9DFDA1-8458-4A62-AFC2-6DC41A298193}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A9DFDA1-8458-4A62-AFC2-6DC41A298193}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABA31974-4530-487E-B3BF-FB302475F750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABA31974-4530-487E-B3BF-FB302475F750}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABA31974-4530-487E-B3BF-FB302475F750}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABA31974-4530-487E-B3BF-FB302475F750}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0A24748-10AC-4BDD-8468-9A678F622585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0A24748-10AC-4BDD-8468-9A678F622585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0A24748-10AC-4BDD-8468-9A678F622585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0A24748-10AC-4BDD-8468-9A678F622585}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

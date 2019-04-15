@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
@@ -17,13 +18,54 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\src\views\Maps\**" />
+    <Compile Remove="ClientApp\src\views\RTLPage\**" />
+    <Compile Remove="ClientApp\src\views\UpgradeToPro\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\views\Maps\**" />
+    <Content Remove="ClientApp\src\views\RTLPage\**" />
+    <Content Remove="ClientApp\src\views\UpgradeToPro\**" />
+    <EmbeddedResource Remove="ClientApp\src\views\Maps\**" />
+    <EmbeddedResource Remove="ClientApp\src\views\RTLPage\**" />
+    <EmbeddedResource Remove="ClientApp\src\views\UpgradeToPro\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\src\views\Maps\**" />
+    <None Remove="ClientApp\src\views\RTLPage\**" />
+    <None Remove="ClientApp\src\views\UpgradeToPro\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\SampleDataController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove="ClientApp\.babelrc" />
+    <None Remove="ClientApp\.env" />
+    <None Remove="ClientApp\.eslintignore" />
+    <None Remove="ClientApp\.eslintrc.js" />
+    <None Remove="ClientApp\.gitignore" />
+    <None Remove="ClientApp\bower.json" />
+    <None Remove="ClientApp\CHANGELOG.md" />
+    <None Remove="ClientApp\ISSUE_TEMPLATE.md" />
+    <None Remove="ClientApp\LICENSE.md" />
+    <None Remove="ClientApp\README.md" />
+    <None Remove="ClientApp\src\views\Maps\Maps.jsx" />
+    <None Remove="ClientApp\src\views\RTLPage\RTLPage.jsx" />
+    <None Remove="ClientApp\src\views\UpgradeToPro\UpgradeToPro.jsx" />
   </ItemGroup>
 
   <ItemGroup>

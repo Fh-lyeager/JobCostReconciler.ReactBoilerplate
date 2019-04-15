@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using JobCostReconciliation.Data.Clients;
 using JobCostReconciliation.Interfaces.Clients;
 using JobCostReconciliation.Interfaces.Services;
 using Pervasive.Data.SqlClient;
@@ -14,6 +15,11 @@ namespace JobCostReconciliation.Interfaces.Repositories
         private readonly IServiceLog _serviceLog;
         private readonly IPervasiveClient _pervasiveClient;
         private readonly ISqlClient _sqlClient;
+
+        public JobCostActivityRepository()
+        {
+
+        }
 
         public JobCostActivityRepository(IServiceLog serviceLog, IPervasiveClient pervasiveClient, ISqlClient sqlClient)
         {
@@ -206,7 +212,7 @@ namespace JobCostReconciliation.Interfaces.Repositories
             {
                 string sql = GetJobCstActsByJobSql(jobNumber, company);
 
-                _serviceLog.AppendLog($" Getting pervasive JobCstActs for job {jobNumber}", "", null);
+                //_serviceLog.AppendLog($" Getting pervasive JobCstActs for job {jobNumber}", "", null);
                 DataTable pervasiveJobCstActs = _pervasiveClient.QueryPervasiveADO(sql);
 
                 // if no records returned from po_header
@@ -216,11 +222,11 @@ namespace JobCostReconciliation.Interfaces.Repositories
 
                     // in rare cases, this is a correct result, meaning no po_header records exist in pervasive - usually caused by an error record in PO DI preventing processing
                     //  if this scenario is encountered, a notification should be generated immediately so the PO DI queue can be checked and error records can be resolved
-                    _serviceLog.AppendLog($" Failure getting pervasive JobCstActs for job {jobNumber} company {company}", "", null);
+                    //_serviceLog.AppendLog($" Failure getting pervasive JobCstActs for job {jobNumber} company {company}", "", null);
                     throw new Exception($"Workflow failure: Failure getting pervasive job cost records for job {jobNumber}");
                 }
 
-                _serviceLog.AppendLog($" {pervasiveJobCstActs.Rows.Count} Pervasive JobCstActs records found");
+                //_serviceLog.AppendLog($" {pervasiveJobCstActs.Rows.Count} Pervasive JobCstActs records found");
 
                 return pervasiveJobCstActs;
             }
@@ -279,7 +285,8 @@ namespace JobCostReconciliation.Interfaces.Repositories
             string sql = GetEgmJobTotalsSql(homeRIds);
             string connection = ConfigurationManager.ConnectionStrings["SapphireDbContext"].ConnectionString.ToString();
 
-            DataTable sapphireEgmTotals = _sqlClient.QueryADO(sql, connection);
+            SqlClient sqlClient = new SqlClient();
+            DataTable sapphireEgmTotals = sqlClient.QueryADO(sql, connection);
 
             // if no records returned from sapphire
             if (sapphireEgmTotals is null || !(sapphireEgmTotals.AsEnumerable().Any()))

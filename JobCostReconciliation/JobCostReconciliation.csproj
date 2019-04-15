@@ -75,7 +75,11 @@
     </Compile>
     <Compile Include="Data\Clients\PervasiveClient.cs" />
     <Compile Include="Data\Clients\SqlClient.cs" />
-    <Compile Include="Data\Repositories\PervasiveRepository.cs" />
+    <Compile Include="Data\Contexts\ProcessorDbContext.cs" />
+    <Compile Include="Data\Repositories\CompanyRepository.cs" />
+    <Compile Include="Data\Repositories\PurchaseOrderHeaderRepository.cs" />
+    <Compile Include="Data\Repositories\PurchaseOrderLastRunRepository.cs" />
+    <Compile Include="Data\Repositories\PurchaseOrderQueueRepository.cs" />
     <Compile Include="Data\Repositories\PurchaseOrderRepository.cs" />
     <Compile Include="Data\Repositories\QueueRepository.cs" />
     <Compile Include="Data\Repositories\SapphireRepository.cs" />
@@ -83,7 +87,11 @@
     <Compile Include="Interfaces\Clients\IPervasiveClient.cs" />
     <Compile Include="Data\Repositories\JobCostActivityRepository.cs" />
     <Compile Include="Interfaces\Clients\ISqlClient.cs" />
+    <Compile Include="Interfaces\Repositories\ICompanyRepository.cs" />
     <Compile Include="Interfaces\Repositories\IJobCostActivityRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPurchaseOrderHeaderRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPurchaseOrderLastRunRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPurchaseOrderQueueRepository.cs" />
     <Compile Include="Interfaces\Repositories\IPurchaseOrderRepository.cs" />
     <Compile Include="Interfaces\Repositories\IWorkflowRepository.cs" />
     <Compile Include="Interfaces\Services\IDateService.cs" />
@@ -91,16 +99,21 @@
     <Compile Include="Interfaces\Services\IImportService.cs" />
     <Compile Include="Interfaces\Services\IJobCostActivityService.cs" />
     <Compile Include="Interfaces\Services\IJobService.cs" />
+    <Compile Include="Interfaces\Services\IPurchaseOrderLastRunService.cs" />
+    <Compile Include="Interfaces\Services\IPurchaseOrderQueueService.cs" />
     <Compile Include="Interfaces\Services\IPurchaseOrderService.cs" />
     <Compile Include="Interfaces\Services\IVariancePurchaseOrderService.cs" />
     <Compile Include="Interfaces\Services\IWorkflowService.cs" />
+    <Compile Include="Model\EntityBase.cs" />
+    <Compile Include="Model\Enums\QueueItemStatusType.cs" />
     <Compile Include="Model\Enums\Workflow.cs" />
+    <Compile Include="Model\PurchaseOrderLastRun.cs" />
+    <Compile Include="Model\PurchaseOrderQueue.cs" />
     <Compile Include="Model\Reconciliation.cs" />
     <Compile Include="Model\Workflow.cs" />
     <Compile Include="Services\DateService.cs" />
     <Compile Include="Services\ExportService.cs" />
     <Compile Include="Interfaces\IReconciler.cs" />
-    <Compile Include="Interfaces\Repositories\IPervasiveRepository.cs" />
     <Compile Include="Interfaces\Repositories\IQueueRepository.cs" />
     <Compile Include="Interfaces\Repositories\ISapphireRepository.cs" />
     <Compile Include="Interfaces\Services\IConsoleLogger.cs" />
@@ -116,11 +129,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Reconciler.cs" />
     <Compile Include="Services\ConsoleLogger.cs" />
     <Compile Include="Services\ImportService.cs" />
     <Compile Include="Services\JobCostActivityService.cs" />
     <Compile Include="Services\JobService.cs" />
+    <Compile Include="Services\PurchaseOrderLastRunService.cs" />
+    <Compile Include="Services\PurchaseOrderQueueService.cs" />
     <Compile Include="Services\PurchaseOrderService.cs" />
     <Compile Include="Services\ServiceLog.cs" />
     <Compile Include="Services\VariancePurchaseOrderService.cs" />

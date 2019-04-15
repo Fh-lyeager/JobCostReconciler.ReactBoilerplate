@@ -3,11 +3,9 @@ using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Data.Repositories;
 using JobCostReconciliation.Model;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.Remoting;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -20,7 +18,8 @@ namespace JobCostReconciliation.Services
         public string dataObject = "JobCstActs";
 
         private readonly ISapphireRepository _sapphireRepository;
-        private readonly IPervasiveRepository _pervasiveRepository;
+        private readonly ICompanyRepository _companyRepository;
+        private readonly IPurchaseOrderHeaderRepository _purchaseOrderHeaderRepository;
         private readonly IServiceLog _serviceLog;
         private readonly IExportService _exportService;
         private readonly IJobService _jobService;
@@ -32,10 +31,11 @@ namespace JobCostReconciliation.Services
 
         }
 
-        public JobCostActivityService(ISapphireRepository sapphireRepository, IPervasiveRepository pervasiveRepository, IServiceLog serviceLog, IExportService exportService, IJobService jobService, IJobCostActivityRepository jobCostActivityRepository, IWorkflowService workflowService)
+        public JobCostActivityService(ISapphireRepository sapphireRepository, ICompanyRepository companyRepository, IPurchaseOrderHeaderRepository purchaseOrderHeaderRepository, IServiceLog serviceLog, IExportService exportService, IJobService jobService, IJobCostActivityRepository jobCostActivityRepository, IWorkflowService workflowService)
         {
             _sapphireRepository = sapphireRepository;
-            _pervasiveRepository = pervasiveRepository;
+            _companyRepository = companyRepository;
+            _purchaseOrderHeaderRepository = purchaseOrderHeaderRepository;
             _serviceLog = serviceLog;
             _exportService = exportService;
             _jobService = jobService;
@@ -43,36 +43,36 @@ namespace JobCostReconciliation.Services
             _workflowService = workflowService;
         }
 
-        public void ConfirmJobCstActInsertByJobNumber(string jobNumber, DataTable recordsToInsert, string dataObject)
-        {
-            try
-            {
-                string dbName = GetDatabase(recordsToInsert);
+        //public void ConfirmJobCstActInsertByJobNumber(string jobNumber, DataTable recordsToInsert, string dataObject)
+        //{
+        //    try
+        //    {
+        //        string dbName = GetDatabase(recordsToInsert);
 
-                Console.WriteLine(String.Format("\nThe following activities will be inserted to {0} for job {1}:", dbName, _jobService.FormatJobNumber(jobNumber)));
+        //        Console.WriteLine(String.Format("\nThe following activities will be inserted to {0} for job {1}:", dbName, _jobService.FormatJobNumber(jobNumber)));
 
-                Console.WriteLine("NewJobNumber\t\tActivity");
-                foreach (DataRow dataRow in recordsToInsert.AsEnumerable())
-                {
-                    Console.WriteLine(String.Format("{0}\t\t{1}", dataRow["NewJobNumber"], dataRow["activity"]));
-                }
+        //        Console.WriteLine("NewJobNumber\t\tActivity");
+        //        foreach (DataRow dataRow in recordsToInsert.AsEnumerable())
+        //        {
+        //            Console.WriteLine(String.Format("{0}\t\t{1}", dataRow["NewJobNumber"], dataRow["activity"]));
+        //        }
 
-                // Confirm insert
-                Console.WriteLine("\nWrite all records to database (Confirm Y/N): ");
-                if (Console.ReadLine().ToUpper() == "Y") { CreateMissingJobCstActs(recordsToInsert, dbName, dataObject); }
-            }
-            catch (Exception ex)
-            {
-                _serviceLog.AppendLog(ex.Message, "", ex);
-            }
-        }
+        //        // Confirm insert
+        //        Console.WriteLine("\nWrite all records to database (Confirm Y/N): ");
+        //        if (Console.ReadLine().ToUpper() == "Y") { CreateMissingJobCstActs(recordsToInsert, dbName, dataObject); }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _serviceLog.AppendLog(ex.Message, "", ex);
+        //    }
+        //}
 
-        private string GetDatabase(DataTable dataTable)
-        {
-            var dbDistinct = dataTable.AsEnumerable()
-                            .Select(r => r.Field<string>("dbName")).Distinct().ToList();
-            return dbDistinct[0];
-        }
+        //private string GetDatabase(DataTable dataTable)
+        //{
+        //    var dbDistinct = dataTable.AsEnumerable()
+        //                    .Select(r => r.Field<string>("dbName")).Distinct().ToList();
+        //    return dbDistinct[0];
+        //}
 
         private void CreateMissingJobCstActs(DataTable recordsToInsert, string dbName, string sqlOperation = "INSERT",string activity = "")
         {
@@ -105,7 +105,7 @@ namespace JobCostReconciliation.Services
         {
             try
             {
-                string company = _pervasiveRepository.GetCompanyByJob(recordToInsert["job_no"].ToString());
+                string company = _companyRepository.GetCompanyByJob(recordToInsert["job_no"].ToString());
                 recordToInsert["po_type"] = dataObject.Equals("JobCstActs") ? "N" : "Y";
 
                 string sqlText = _exportService.BuildSQLInsert(this.dataObject, recordToInsert, company);
@@ -121,31 +121,31 @@ namespace JobCostReconciliation.Services
             }
         }
 
-        public void ReconcileEGMAmounts()
-        {
-            // Get sapphire egm totals by Job
-            DataTable sapphireEgmJobTotals = _sapphireRepository.GetSapphireRecords("JobCstActs_EGM");
+        //public void ReconcileEGMAmounts()
+        //{
+        //    // Get sapphire egm totals by Job
+        //    DataTable sapphireEgmJobTotals = _sapphireRepository.GetSapphireRecords("JobCstActs_EGM");
 
-            if (!(sapphireEgmJobTotals is null))
-            {
-                // Get pervasive egm totals by Job
-                DataTable pervasiveEgmJobTotals = _pervasiveRepository.GetPervasiveRecords("JobCstActs_EGM");
+        //    if (!(sapphireEgmJobTotals is null))
+        //    {
+        //        // Get pervasive egm totals by Job
+        //        DataTable pervasiveEgmJobTotals = _purchaseOrderHeaderRepository.GetPervasiveRecords("JobCstActs_EGM");
 
-                if (!(pervasiveEgmJobTotals is null) && pervasiveEgmJobTotals.AsEnumerable().Any())
-                {
-                    var egmJobTotalsAudit = AuditEgmJobTotals(sapphireEgmJobTotals, pervasiveEgmJobTotals);
+        //        if (!(pervasiveEgmJobTotals is null) && pervasiveEgmJobTotals.AsEnumerable().Any())
+        //        {
+        //            var egmJobTotalsAudit = AuditEgmJobTotals(sapphireEgmJobTotals, pervasiveEgmJobTotals);
 
-                    // Filter list down to only jobs where egm amounts do not match between sapphire and pervasive
-                    egmJobTotalsAudit = egmJobTotalsAudit.AsEnumerable()
-                        .Where(a => (!((decimal)a.SapphireEgmTotal).Equals(((decimal)a.PervasiveEgmTotal))));
+        //            // Filter list down to only jobs where egm amounts do not match between sapphire and pervasive
+        //            egmJobTotalsAudit = egmJobTotalsAudit.AsEnumerable()
+        //                .Where(a => (!((decimal)a.SapphireEgmTotal).Equals(((decimal)a.PervasiveEgmTotal))));
 
-                    // write final output to csv file
-                    string filename = _serviceLog.WriteToFile(_exportService.ConvertToDataTable<ReconciliationEgmTotals>(egmJobTotalsAudit), dataObject);
+        //            // write final output to csv file
+        //            string filename = _serviceLog.WriteToFile(_exportService.ConvertToDataTable<ReconciliationEgmTotals>(egmJobTotalsAudit), dataObject);
 
-                    _serviceLog.AppendLog($"{egmJobTotalsAudit.Count()} {dataObject} records written to file {filename}");
-                }
-            }
-        }
+        //            _serviceLog.AppendLog($"{egmJobTotalsAudit.Count()} {dataObject} records written to file {filename}");
+        //        }
+        //    }
+        //}
 
         public void AuditSapphireWorkflow_HomeEstimateToApproved(int timespanDays)
         {
@@ -161,7 +161,7 @@ namespace JobCostReconciliation.Services
             if (!(sapphireEgmJobTotals is null) && sapphireEgmJobTotals.AsEnumerable().Any())
             {
                 // Get pervasive egm totals by Job
-                DataTable pervasiveEgmJobTotals = _pervasiveRepository.GetPervasiveRecords("JobCstActs_EGM");
+                DataTable pervasiveEgmJobTotals = _purchaseOrderHeaderRepository.GetPervasiveRecords("JobCstActs_EGM");
 
                 if (!(pervasiveEgmJobTotals is null) && pervasiveEgmJobTotals.AsEnumerable().Any())
                 {
@@ -207,7 +207,8 @@ namespace JobCostReconciliation.Services
             jobs.Columns.Add("dbName");
             foreach (var job in jobs.AsEnumerable())
             {
-                job["dbName"] = _pervasiveRepository.GetCompanyByJob(job["JobNumber"].ToString());
+                CompanyRepository companyRepository = new CompanyRepository();
+                job["dbName"] = companyRepository.GetCompanyByJob(job["JobNumber"].ToString());
             }
             return jobs;
         }
@@ -219,34 +220,60 @@ namespace JobCostReconciliation.Services
 
         public ReconciliationEgmTotals GetEgmAmountsByJobNumber(string jobNumber)
         {
-            //_serviceLog.AppendLogMessage("\nGetting Job Cost Totals");
-
-            SapphireRepository sapphireRepository = new SapphireRepository();
-
             // Get sapphire egm totals by Job
+            SapphireRepository sapphireRepository = new SapphireRepository();
             DataTable sapphireEgmJobTotals = sapphireRepository.GetSapphireRecords("JobCstActs_EGM", jobNumber);
 
             if (!(sapphireEgmJobTotals is null))
             {
-                PervasiveRepository pervasiveRepository = new PervasiveRepository();
-
                 // Get pervasive egm totals by Job
-                DataTable pervasiveEgmJobTotals = pervasiveRepository.GetPervasiveRecords("JobCstActs_EGM", jobNumber);
+                PurchaseOrderHeaderRepository purchaseOrderHeaderRepository = new PurchaseOrderHeaderRepository();
+                DataTable pervasiveEgmJobTotals = purchaseOrderHeaderRepository.GetPervasiveRecords("JobCstActs_EGM", jobNumber);
 
                 if (!(pervasiveEgmJobTotals is null) && pervasiveEgmJobTotals.AsEnumerable().Any())
                 {
                     var egmJobTotalsAudit = AuditEgmJobTotals(sapphireEgmJobTotals, pervasiveEgmJobTotals);
 
                     ReconciliationEgmTotals egmTotals = new ReconciliationEgmTotals();
-
                     egmTotals.JobNumber = jobNumber;
                     egmTotals.SapphireEgmTotal = Convert.ToDecimal(egmJobTotalsAudit.ToList()[0].SapphireEgmTotal);
                     egmTotals.PervasiveEgmTotal = Convert.ToDecimal(egmJobTotalsAudit.ToList()[0].PervasiveEgmTotal);
+                    egmTotals.EstimateApprovalDate = egmJobTotalsAudit.ToList()[0].EstimateApprovalDate;
 
                     return egmTotals;
                 }
             }
 
+            return null;
+        }
+
+        public List<ReconciliationEgmTotals> GetWorkflowJobs()
+        {
+            // get workflows
+            WorkflowService workflowService = new WorkflowService();
+            List<Workflow> workflows = workflowService.ListSapphireWorkflows();
+
+            var HomeRIDs = workflows.AsEnumerable()
+                .Select(w => w.RefObjRID).Distinct().ToList();
+
+            // get sapphire egm totals by HomeRIDs
+            var sapphireEgmJobTotals = GetCompanyByJobNumber(GetSapphireEgmJobTotals(HomeRIDs));
+
+            if (!(sapphireEgmJobTotals is null) && sapphireEgmJobTotals.AsEnumerable().Any())
+            {
+                // Get pervasive egm totals by Job
+                PurchaseOrderHeaderRepository purchaseOrderHeaderRepository = new PurchaseOrderHeaderRepository();
+                DataTable pervasiveEgmJobTotals = purchaseOrderHeaderRepository.GetPervasiveRecords("JobCstActs_EGM");
+
+                if (!(pervasiveEgmJobTotals is null) && pervasiveEgmJobTotals.AsEnumerable().Any())
+                {
+                    var egmJobTotalsAudit = AuditEgmJobTotals(sapphireEgmJobTotals, pervasiveEgmJobTotals);
+                    //List<ReconciliationEgmTotals> egmJobTotalsList = egmJobTotalsAudit
+                    //    .OrderByDescending(o => o.EstimateApprovalDate)
+                    //    .ThenBy(t => t.JobNumber).ToList();
+                    return egmJobTotalsAudit.ToList();
+                }
+            }
             return null;
         }
 
@@ -285,7 +312,7 @@ namespace JobCostReconciliation.Services
             if (!(sapphireEgmJobTotals is null))
             {
                 // Get pervasive egm totals by Job
-                DataTable pervasiveEgmJobTotals = _pervasiveRepository.GetPervasiveRecords("JobCstActs_EGM", jobNumber);
+                DataTable pervasiveEgmJobTotals = _purchaseOrderHeaderRepository.GetPervasiveRecords("JobCstActs_EGM", jobNumber);
 
                 if (!(pervasiveEgmJobTotals is null) && pervasiveEgmJobTotals.AsEnumerable().Any())
                 {
@@ -320,6 +347,7 @@ namespace JobCostReconciliation.Services
                                         join prow in pervasiveEgmJobTotals.AsEnumerable().DefaultIfEmpty() on
                                             new { JobNumber = srow.Field<string>("JobNumber") }
                                             equals new { JobNumber = prow.Field<string>("job_no") }
+                                        //where (prow.Field<string>("databaseName").Equals(srow.Field<string>("dbName")))
                                         select new ReconciliationEgmTotals()
                                         {
                                             HomeRID = srow.Field<int>("HomeRID"),
@@ -382,7 +410,7 @@ namespace JobCostReconciliation.Services
             {
                 // check to see if there is an existing workflow for this record
                 int workflowRID = GetSapphireWorkflow(jobNumber);
-                company = _pervasiveRepository.GetCompanyByJob(jobNumber);
+                company = _companyRepository.GetCompanyByJob(jobNumber);
 
                 DataTable sapphireJobCstActs = _sapphireRepository.GetSapphireRecords("JobCstActs", jobNumber);
 
@@ -501,7 +529,8 @@ namespace JobCostReconciliation.Services
 
         private DataTable GetSapphireEgmJobTotals(List<int> homeRIds)
         {
-            return _jobCostActivityRepository.GetEgmJobTotals(homeRIds);
+            JobCostActivityRepository jobCostActivityRepository = new JobCostActivityRepository();
+            return jobCostActivityRepository.GetEgmJobTotals(homeRIds);
         }
     }
 }

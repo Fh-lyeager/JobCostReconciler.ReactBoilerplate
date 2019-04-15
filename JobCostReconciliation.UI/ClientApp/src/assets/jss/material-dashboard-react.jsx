@@ -70,12 +70,50 @@ const defaultFont = {
   lineHeight: "1.5em"
 };
 
-const primaryColor = ["#9c27b0", "#ab47bc", "#8e24aa", "#af2cc5"];
+/*
+    A60000  (166,0,0)       red
+    C6C6C6  (198,198,198)   gray
+    E1A503  (225,165,3)     gold
+    9B1C23  (155,28,35)     dark red
+    DF1929  light red
+    CBB49A  (203,180,154)   light brown/beige
+    666666  dark grey
+    00A5B8  turquoise
+    FDD14E  light yellow
+    00366D  dark blue
+    D0D7DA  light grey/pale grey
+    F5F5F5  eggshell? (white)
+    EEEEEE  bright white
+    FFFFFF  white
+    499F68  (73,159,104)    green/light green
+    D60000  (214,0,0)       bright red
+    C0C0C0  (192,192,192)   grey
+    30BACE  (48,186,206)    sky blue
+    000000  (0,0,0)         black
+*/
+
+const primaryColor = ["#d60000", "#d60000", "#df1929", "#9b1c23"];
 const warningColor = ["#ff9800", "#ffa726", "#fb8c00", "#ffa21a"];
 const dangerColor = ["#f44336", "#ef5350", "#e53935", "#f55a4e"];
 const successColor = ["#4caf50", "#66bb6a", "#43a047", "#5cb860"];
 const infoColor = ["#00acc1", "#26c6da", "#00acc1", "#00d3ee"];
 const roseColor = ["#e91e63", "#ec407a", "#d81b60", "#eb3573"];
+const grayColor = [
+  "#CBB49A",
+  "#666666",
+  "#00A5B8",
+  "#FDD14E",
+  "#00366D",
+  "#D0D7DA",
+  "#F5F5F5",
+  "#EEEEEE",
+  "#FFFFFF",
+  "#499F68",
+  "#D60000",
+  "#C0C0C0",
+  "#30BACE"
+];
+/*
 const grayColor = [
   "#999",
   "#777",
@@ -90,6 +128,7 @@ const grayColor = [
   "#eee",
   "#e7e7e7"
 ];
+*/
 const blackColor = "#000";
 const whiteColor = "#FFF";
 

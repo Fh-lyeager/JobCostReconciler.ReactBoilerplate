@@ -11,15 +11,17 @@ namespace JobCostReconciliation.Services
     public class VariancePurchaseOrderService : IVariancePurchaseOrderService
     {
         private readonly ISapphireRepository _sapphireRepository;
-        private readonly IPervasiveRepository _pervasiveRepository;
+        private readonly ICompanyRepository _companyRepository;
+        private readonly IPurchaseOrderHeaderRepository _purchaseOrderHeaderRepository;
         private readonly IServiceLog _serviceLog;
         private readonly IExportService _exportService;
         private readonly IDateService _dateService;
 
-        public VariancePurchaseOrderService(ISapphireRepository sapphireRepository, IPervasiveRepository pervasiveRepository, IServiceLog serviceLog, IExportService exportService, IDateService dateService)
+        public VariancePurchaseOrderService(ISapphireRepository sapphireRepository, ICompanyRepository companyRepository, IPurchaseOrderHeaderRepository purchaseOrderHeaderRepository, IServiceLog serviceLog, IExportService exportService, IDateService dateService)
         {
             _sapphireRepository = sapphireRepository;
-            _pervasiveRepository = pervasiveRepository;
+            _companyRepository = companyRepository;
+            _purchaseOrderHeaderRepository = purchaseOrderHeaderRepository;
             _serviceLog = serviceLog;
             _exportService = exportService;
             _dateService = dateService;
@@ -48,7 +50,7 @@ namespace JobCostReconciliation.Services
             try
             {
                 var sapphireRecords = _sapphireRepository.GetSapphireRecords("JobVPOs");
-                var pervasiveRecords = _pervasiveRepository.GetPervasiveRecords("JobVPOs");
+                var pervasiveRecords = _purchaseOrderHeaderRepository.GetPervasiveRecords("JobVPOs");
 
                 if ((!(sapphireRecords is null) && sapphireRecords.AsEnumerable().Any())
                         && (!(pervasiveRecords is null) && pervasiveRecords.AsEnumerable().Any()))
@@ -215,7 +217,7 @@ namespace JobCostReconciliation.Services
             try
             {
                 var sapphireRecords = _sapphireRepository.GetSapphireRecords("JobVPOs");
-                var pervasiveRecords = _pervasiveRepository.GetPervasiveRecords("JobVPOs");
+                var pervasiveRecords = _purchaseOrderHeaderRepository.GetPervasiveRecords("JobVPOs");
 
                 if ((!(sapphireRecords is null) && sapphireRecords.AsEnumerable().Any())
                         && (!(pervasiveRecords is null) && pervasiveRecords.AsEnumerable().Any()))

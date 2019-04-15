@@ -23,35 +23,46 @@ namespace JobCostReconciler.Controllers
         {
         }
 
-        //[HttpGet("[action]/{jobNumber}")]
-        [HttpGet("[action]")]
+        [HttpGet("[action]/{jobNumber}")]
+        //[HttpGet("[action]")]
         public IEnumerable<Job> JobTotals(string jobNumber)
         {
             var job = jobNumber;
 
-            //var jobNumber = "ABN010050000";
-            job = "APT015810000";
-            //var jobNumber = "";
+            //job = "APT015810000";
 
             JobCostActivityService _jobCostActivityService = new JobCostActivityService();
-
             ReconciliationEgmTotals egmTotals = _jobCostActivityService.GetEgmAmountsByJobNumber(job);
 
             return Enumerable.Range(1,1).Select(i => new Job
             {
                 JobNumber = egmTotals.JobNumber,
-                SapphireEgmTotal = Convert.ToDecimal(egmTotals.SapphireEgmTotal.ToString()),
-                PervasiveEgmTotal = Convert.ToDecimal(egmTotals.PervasiveEgmTotal.ToString()),
+                EstimateApprovalDate = egmTotals.EstimateApprovalDate,
+                SapphireEgmTotal = Convert.ToDecimal(egmTotals.SapphireEgmTotal.ToString()).ToString("0.00"),
+                PervasiveEgmTotal = Convert.ToDecimal(egmTotals.PervasiveEgmTotal.ToString()).ToString("0.00")
             });
-            
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<Job> WorkflowJobsEgmTotals()
+        {
+            JobCostActivityService _jobCostActivityService = new JobCostActivityService();
+            List<ReconciliationEgmTotals> egmTotals = _jobCostActivityService.GetWorkflowJobs();
+
+            return Enumerable.Range(1, egmTotals.Count-1).Select(i => new Job
+            {
+                JobNumber = egmTotals[i].JobNumber,
+                SapphireEgmTotal = Convert.ToDecimal(egmTotals[i].SapphireEgmTotal.ToString()).ToString("0.00"),
+                PervasiveEgmTotal = Convert.ToDecimal(egmTotals[i].PervasiveEgmTotal.ToString()).ToString("0.00")
+            });
         }
 
         public class Job
         {
             public string JobNumber { get; set; }
-            public decimal SapphireEgmTotal { get; set; }
-            public decimal PervasiveEgmTotal { get; set; }
-
+            public DateTime EstimateApprovalDate { get; set; }
+            public string SapphireEgmTotal { get; set; }
+            public string PervasiveEgmTotal { get; set; }
             public bool TotalsMatch
             {
                 get

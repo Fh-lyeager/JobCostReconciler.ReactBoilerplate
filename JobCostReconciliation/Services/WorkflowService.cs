@@ -5,12 +5,18 @@ using System.Linq;
 using JobCostReconciliation.Interfaces.Repositories;
 using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Model;
+using JobCostReconciliation.Data.Repositories;
 
 namespace JobCostReconciliation.Services
 {
     public class WorkflowService : IWorkflowService
     {
         private readonly IWorkflowRepository _workflowRepository;
+
+        public WorkflowService()
+        {
+            _workflowRepository = new WorkflowRepository();
+        }
 
         public WorkflowService(IWorkflowRepository workflowRepository)
         {
@@ -73,7 +79,8 @@ namespace JobCostReconciliation.Services
 
         private DataTable GetSapphireWorkflows()
         {
-            return _workflowRepository.GetSapphireWorkflow();
+            WorkflowRepository workflowRepository = new WorkflowRepository();
+            return workflowRepository.GetSapphireWorkflow();
         }
     }
 }
