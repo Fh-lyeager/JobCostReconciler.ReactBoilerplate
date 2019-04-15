@@ -2,13 +2,15 @@
 import Dashboard from "@material-ui/icons/Dashboard";
 //import Person sfrom "@material-ui/icons/Person";
 //import LibraryBooks from "@material-ui/icons/LibraryBooks";
-//import BubbleChart from "@material-ui/icons/BubbleChart";
+import BubbleChart from "@material-ui/icons/BubbleChart";
 //import LocationOn from "@material-ui/icons/LocationOn";
-//import Notifications from "@material-ui/icons/Notifications";
+import Notifications from "@material-ui/icons/Notifications";
 //import Unarchive from "@material-ui/icons/Unarchive";
 //import Language from "@material-ui/icons/Language";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
+
+
 //import UserProfile from "views/UserProfile/UserProfile.jsx";
 import TableList from "views/TableList/TableList.jsx";
 //import Typography from "views/Typography/Typography.jsx";
@@ -19,7 +21,9 @@ import TableList from "views/TableList/TableList.jsx";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.jsx";
 
-import JobCostSummary from "views/TableList/JobCostSummary.js";
+import JobCostSummaryPage from "views/JobCostSummary/JobCostSummary.js";
+import PurchaseOrderPage from "views/PurchaseOrder/PurchaseOrder.jsx";
+import VariancePurchaseOrderPage from "views/VariancePurchaseOrder/VariancePurchaseOrder.jsx";
 
 const dashboardRoutes = [
   {
@@ -31,21 +35,29 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/table",
-    name: "Table List",
-    rtlName: "قائمة الجدول",
-    icon: "content_paste",
-    component: TableList,
-    layout: "/admin"
-  },
-  {
     path: "/jobcostsummary",
-    name: "Table List",
+    name: "Job Cost Summary",
     rtlName: "قائمة الجدول",
     icon: "content_paste",
-    component: JobCostSummary,
+    component: JobCostSummaryPage,
     layout: "/admin"
-  }
+    },
+    {
+        path: "/purchaseorder",
+        name: "Purchase Order",
+        rtlName: "إخطارات",
+        icon: BubbleChart,
+        component: PurchaseOrderPage,
+        layout: "/admin"
+    },
+    {
+        path: "/variancepurchaseorder",
+        name: "VPO",
+        rtlName: "إخطارات",
+        icon: Notifications,
+        component: VariancePurchaseOrderPage,
+        layout: "/admin"
+    },
 ];
 
 export default dashboardRoutes;

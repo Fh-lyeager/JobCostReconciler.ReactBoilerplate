@@ -2,9 +2,8 @@
 
 namespace JobCostReconciliation.Interfaces.Repositories
 {
-    public interface IPervasiveRepository
+    public interface IPurchaseOrderHeaderRepository
     {
         DataTable GetPervasiveRecords(string dataObject = "", string jobNumber = "");
-        string GetCompanyByJob(string jobNumber);
     }
 }

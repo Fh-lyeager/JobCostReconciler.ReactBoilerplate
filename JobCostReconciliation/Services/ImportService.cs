@@ -12,14 +12,14 @@ namespace JobCostReconciliation.Services
     public class ImportService : IImportService
     {
         private readonly ISapphireRepository _sapphireRepository;
-        private readonly IPervasiveRepository _pervasiveRepository;
+        private readonly IPurchaseOrderHeaderRepository _purchaseOrderHeaderRepository;
         private readonly IQueueRepository _queueRepository;
         private readonly IServiceLog _serviceLog;
 
-        public ImportService(ISapphireRepository SapphireRepository, IPervasiveRepository PervasiveRepository, IQueueRepository QueueRepository, IServiceLog ServiceLog)
+        public ImportService(ISapphireRepository SapphireRepository, IPurchaseOrderHeaderRepository purchaseOrderHeaderRepository, IQueueRepository QueueRepository, IServiceLog ServiceLog)
         {
             _sapphireRepository = SapphireRepository;
-            _pervasiveRepository = PervasiveRepository;
+            _purchaseOrderHeaderRepository = purchaseOrderHeaderRepository;
             _queueRepository = QueueRepository;
             _serviceLog = ServiceLog;
         }
@@ -42,7 +42,7 @@ namespace JobCostReconciliation.Services
         {
             try
             {
-                DataTable pervasiveRecords = _pervasiveRepository.GetPervasiveRecords();
+                DataTable pervasiveRecords = _purchaseOrderHeaderRepository.GetPervasiveRecords();
                 DataTable pervasiveRecordsToUpdate = new DataTable();
 
                 if (truncate)

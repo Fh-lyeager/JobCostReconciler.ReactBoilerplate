@@ -7,13 +7,11 @@ namespace JobCostReconciliation
     {
         private readonly IConsoleLogger _logger;
         private readonly IReconciler _reconciler;
-        private readonly IServiceLog _serviceLog;
 
-        public Application(IConsoleLogger logger, IReconciler reconciler, IServiceLog serviceLog)
+        public Application(IConsoleLogger logger, IReconciler reconciler)
         {
             _logger = logger;
             _reconciler = reconciler;
-            _serviceLog = serviceLog;
         }
 
         public void Run()
