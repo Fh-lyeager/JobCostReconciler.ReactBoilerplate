@@ -14,7 +14,8 @@ namespace JobCostReconciliation
         public string dataObject = string.Empty;
 
         private readonly ISapphireRepository _sapphireRepository;
-        private readonly IPervasiveRepository _pervasiveRepository;
+        private readonly ICompanyRepository _companyRepository;
+        private readonly IPurchaseOrderHeaderRepository _purchaseOrderHeaderRepository;
         private readonly IQueueRepository _queueRepository;
         private readonly IServiceLog _serviceLog;
         private readonly IConsoleLogger _consoleLogger;
@@ -26,10 +27,22 @@ namespace JobCostReconciliation
         private readonly IVariancePurchaseOrderService _variancePurchaseOrderService;
         private readonly IJobService _jobService;
 
-        public Reconciler(ISapphireRepository sapphireRepository, IPervasiveRepository pervasiveRepository, IQueueRepository queueRepository, IServiceLog serviceLog, IConsoleLogger consoleLogger, IImportService importService, IExportService exportService, IJobCostActivityService jobCostActivityService, IJobService jobService, IVariancePurchaseOrderService variancePurchaseOrderService)
+        public Reconciler(
+            ISapphireRepository sapphireRepository, 
+            ICompanyRepository companyRepository,
+            IPurchaseOrderHeaderRepository purchaseOrderHeaderRepository,
+            IQueueRepository queueRepository, 
+            IServiceLog serviceLog, 
+            IConsoleLogger consoleLogger, 
+            IImportService importService, 
+            IExportService exportService, 
+            IJobCostActivityService jobCostActivityService, 
+            IJobService jobService, 
+            IVariancePurchaseOrderService variancePurchaseOrderService)
         {
             _sapphireRepository = sapphireRepository;
-            _pervasiveRepository = pervasiveRepository;
+            _companyRepository = companyRepository;
+            _purchaseOrderHeaderRepository = purchaseOrderHeaderRepository;
             _queueRepository = queueRepository;
             _serviceLog = serviceLog;
             _consoleLogger = consoleLogger;
@@ -174,7 +187,7 @@ namespace JobCostReconciliation
         {
             string jobNumber = RequestJobNumberInput();
             string activity = RequestActivityInput();
-            string company = _pervasiveRepository.GetCompanyByJob(jobNumber);
+            string company = _companyRepository.GetCompanyByJob(jobNumber);
             _jobCostActivityService.ReconcileJobCstActRecordsAndEGMAmountsByActivity(jobNumber, activity, company);
 
             _jobCostActivityService.ValidateEgmAmountsByJobNumber(jobNumber);
@@ -232,7 +245,7 @@ namespace JobCostReconciliation
                 // Confirm update
                 if (Console.ReadLine().ToUpper() == "Y")
                 {
-                    string company = _pervasiveRepository.GetCompanyByJob(jobNumber);
+                    string company = _companyRepository.GetCompanyByJob(jobNumber);
                     _jobCostActivityService.ReconcileJobCstActRecordsAndEGMAmounts(jobNumber, company);
 
                     _jobCostActivityService.ValidateEgmAmountsByJobNumber(jobNumber);
@@ -309,7 +322,7 @@ namespace JobCostReconciliation
             try
             {
                 var sapphireRecords = _sapphireRepository.GetSapphireRecords(dataObject, jobNumber);
-                var pervasiveRecords = _pervasiveRepository.GetPervasiveRecords(dataObject, jobNumber);
+                var pervasiveRecords = _purchaseOrderHeaderRepository.GetPervasiveRecords(dataObject, jobNumber);
 
                 // if no records returned from sapphire
                 if (sapphireRecords is null || !(sapphireRecords.AsEnumerable().Any())) 

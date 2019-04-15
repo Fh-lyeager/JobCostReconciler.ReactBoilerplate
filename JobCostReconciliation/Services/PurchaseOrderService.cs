@@ -9,15 +9,15 @@ namespace JobCostReconciliation.Services
     public class PurchaseOrderService : IPurchaseOrderService
     {
         private readonly ISapphireRepository _sapphireRepository;
-        private readonly IPervasiveRepository _pervasiveRepository;
+        private readonly IPurchaseOrderHeaderRepository _purchaseOrderHeaderRepository;
         private readonly IServiceLog _serviceLog;
         private readonly IExportService _exportService;
         private readonly IDateService _dateService;
 
-        public PurchaseOrderService(ISapphireRepository sapphireRepository, IPervasiveRepository pervasiveRepository, IServiceLog serviceLog, IExportService exportService, IDateService dateService)
+        public PurchaseOrderService(ISapphireRepository sapphireRepository, IPurchaseOrderHeaderRepository purchaseOrderHeaderRepository, IServiceLog serviceLog, IExportService exportService, IDateService dateService)
         {
             _sapphireRepository = sapphireRepository;
-            _pervasiveRepository = pervasiveRepository;
+            _purchaseOrderHeaderRepository = purchaseOrderHeaderRepository;
             _serviceLog = serviceLog;
             _exportService = exportService;
             _dateService = dateService;
@@ -40,7 +40,7 @@ namespace JobCostReconciliation.Services
 
             bool UnmatchedValue = false;
             var sapphireRecords = _sapphireRepository.GetSapphireRecords(dataObject);
-            var pervasiveRecords = _pervasiveRepository.GetPervasiveRecords(dataObject);
+            var pervasiveRecords = _purchaseOrderHeaderRepository.GetPervasiveRecords(dataObject);
 
             try
             {

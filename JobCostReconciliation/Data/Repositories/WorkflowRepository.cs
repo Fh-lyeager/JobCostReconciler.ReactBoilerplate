@@ -2,12 +2,18 @@
 using System.Data;
 using JobCostReconciliation.Interfaces.Clients;
 using JobCostReconciliation.Interfaces.Repositories;
+using JobCostReconciliation.Data.Clients;
 
 namespace JobCostReconciliation.Data.Repositories
 {
     public class WorkflowRepository : IWorkflowRepository
     {
         private readonly ISqlClient _sqlClient;
+
+        public WorkflowRepository()
+        {
+
+        }
 
         public WorkflowRepository(ISqlClient sqlClient)
         {
@@ -18,7 +24,8 @@ namespace JobCostReconciliation.Data.Repositories
         {
             string sql = GetSapphireWorkflowQueryString(jobNumber);
             var connString = ConfigurationManager.ConnectionStrings["SapphireDbContext"].ConnectionString;
-            DataTable dataTable = _sqlClient.QueryADO(sql, connString);
+            SqlClient sqlClient = new SqlClient();
+            DataTable dataTable = sqlClient.QueryADO(sql, connString);
 
             if (dataTable == null || dataTable.Rows.Count == 0) return null;
             return dataTable;

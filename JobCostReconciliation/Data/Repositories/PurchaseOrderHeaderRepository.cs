@@ -1,19 +1,21 @@
-﻿using JobCostReconciliation.Interfaces.Repositories;
-using JobCostReconciliation.Interfaces.Services;
-using JobCostReconciliation.Interfaces.Clients;
-using JobCostReconciliation.Data.Clients;
-using System.Configuration;
+﻿using System;
 using System.Data;
-using System;
-
+using JobCostReconciliation.Data.Clients;
+using JobCostReconciliation.Interfaces.Repositories;
 
 namespace JobCostReconciliation.Data.Repositories
 {
-    public class PervasiveRepository : IPervasiveRepository
+    public class PurchaseOrderHeaderRepository : IPurchaseOrderHeaderRepository
     {
-        public PervasiveRepository()
+        private readonly ICompanyRepository _companyRepository;
+
+        public PurchaseOrderHeaderRepository()
         {
-            
+            _companyRepository = new CompanyRepository();
+        }
+        public PurchaseOrderHeaderRepository(ICompanyRepository companyRepository)
+        {
+            _companyRepository = companyRepository;
         }
 
         public DataTable GetPervasiveRecords(string dataObject = "", string jobNumber = "")
@@ -29,7 +31,6 @@ namespace JobCostReconciliation.Data.Repositories
                 if (pervasiveRecords is null) { return null; }
                 if (pervasiveRecords.Rows.Count == 0)
                 {
-                    //_serviceLog.AppendLog(String.Format(" {0} Pervasive {1} records found. Please ensure you have configured the correct environment for this job before continuing.", pervasiveRecords.Rows.Count, dataObject));
                     return null;
                 }
 
@@ -49,13 +50,13 @@ namespace JobCostReconciliation.Data.Repositories
             string company;
             if (dataObject.Equals("JobCstActs_EGM") && !String.IsNullOrEmpty(jobNumber))
             {
-                company = GetCompanyByJob(jobNumber);
+                company = _companyRepository.GetCompanyByJob(jobNumber);
                 return GetEgmTotalsByJobSql(jobNumber, company);
             }
 
             if (dataObject.Equals("JobCstActs_EGM")) { return "exec DI_AuditEGMTotals;"; }
 
-            company = GetCompanyByJob(jobNumber);
+            company = _companyRepository.GetCompanyByJob(jobNumber);
             return GetQueryStringWithJobFilter(jobNumber, company);
         }
 
@@ -113,25 +114,6 @@ namespace JobCostReconciliation.Data.Repositories
                     " WHERE vpo_yes_no = 0 " +
                         " AND job_no LIKE '" + jobNumber + "%'" +
                     " ORDER BY job_no ASC, activity ASC, po_no ASC";
-        }
-
-        public string GetCompanyByJob(string jobNumber)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(jobNumber)) return null;
-
-                var sql = "exec CS_getCompanyByJob('" + jobNumber + "');";
-                PervasiveClient pervasiveClient = new PervasiveClient();
-                DataTable jobCompanyData = pervasiveClient.QueryPervasiveADO(sql);
-
-                if (jobCompanyData is null || jobCompanyData.Rows.Count == 0) { return null; }
-                return jobCompanyData.Rows[0]["CompanyName"].ToString();
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
         }
     }
 }
