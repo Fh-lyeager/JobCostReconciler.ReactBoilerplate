@@ -1,8 +1,10 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using JobCostReconciliation.Interfaces.Clients;
 using JobCostReconciliation.Interfaces.Repositories;
-using JobCostReconciliation.Data.Clients;
+using JobCostReconciliation.Data.Contexts;
+using JobCostReconciliation.Model;
 
 namespace JobCostReconciliation.Data.Repositories
 {
@@ -20,6 +22,20 @@ namespace JobCostReconciliation.Data.Repositories
             _sqlClient = sqlClient;
         }
 
+        public List<Workflow> GetSapphireWorkflow(int homeRID = 0)
+        {
+            using (var _db = new SapphireDbContext())
+            {
+                return _db.Workflows
+                    .Where(w => w.RefObjType == "Home"
+                        && w.Name == "Home Estimate Status Approved"
+                        && ((!(homeRID.Equals(0)) && w.RefObjRID.Equals(homeRID))
+                        || (homeRID.Equals(0)))
+                    ).ToList();
+            }
+        }
+
+        /*
         public DataTable GetSapphireWorkflow(string jobNumber = "")
         {
             string sql = GetSapphireWorkflowQueryString(jobNumber);
@@ -54,6 +70,6 @@ namespace JobCostReconciliation.Data.Repositories
                    where +
                    "ORDER BY CreationDate DESC";
         }
-        
+        */
     }
 }

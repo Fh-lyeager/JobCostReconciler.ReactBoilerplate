@@ -8,7 +8,7 @@ using JobCostReconciliation.Model;
 using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Services;
 
-namespace JobCostReconciliation.UI.Controllers.PurchaseOrder
+namespace JobCostReconciliation.UI.Controllers
 {
     [Route("admin/api/[controller]")]
     [ApiController]

@@ -150,7 +150,7 @@ namespace JobCostReconciliation.Services
         public void AuditSapphireWorkflow_HomeEstimateToApproved(int timespanDays)
         {
             // get workflows
-            List<Workflow> workflows = _workflowService.ListSapphireWorkflows();
+            List<Workflow> workflows = _workflowService.ListWorkflows();
 
             var HomeRIDs = workflows.AsEnumerable()
                 .Select(w => w.RefObjRID).Distinct().ToList();
@@ -251,7 +251,7 @@ namespace JobCostReconciliation.Services
         {
             // get workflows
             WorkflowService workflowService = new WorkflowService();
-            List<Workflow> workflows = workflowService.ListSapphireWorkflows();
+            List<Workflow> workflows = workflowService.ListWorkflows();
 
             var HomeRIDs = workflows.AsEnumerable()
                 .Select(w => w.RefObjRID).Distinct().ToList();
@@ -452,7 +452,7 @@ namespace JobCostReconciliation.Services
 
         private int GetSapphireWorkflow(string jobNumber)
         {
-            Workflow workflow = _workflowService.GetSapphireWorkflow(jobNumber);
+            Workflow workflow = _workflowService.GetWorkflow(jobNumber);
             return workflow.WFlowRID;
         }
 

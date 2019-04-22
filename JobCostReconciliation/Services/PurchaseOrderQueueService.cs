@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using JobCostReconciliation.Interfaces.Repositories;
 using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Data.Repositories;
 using JobCostReconciliation.Model;
@@ -11,27 +8,30 @@ namespace JobCostReconciliation.Services
 {
     public class PurchaseOrderQueueService : IPurchaseOrderQueueService
     {
+        private readonly IPurchaseOrderQueueRepository _purchaseOrderQueueRepository;
         public PurchaseOrderQueueService()
         {
+            _purchaseOrderQueueRepository = new PurchaseOrderQueueRepository();
+        }
 
+        public PurchaseOrderQueueService(IPurchaseOrderQueueRepository purchaseOrderQueueRepository)
+        {
+            _purchaseOrderQueueRepository = purchaseOrderQueueRepository;
         }
 
         public IQueryable<PurchaseOrderQueue> GetErroredItems()
         {
-            PurchaseOrderQueueRepository purchaseOrderQueueRepository = new PurchaseOrderQueueRepository();
-            return purchaseOrderQueueRepository.GetErroredItems();
+            return _purchaseOrderQueueRepository.GetErroredItems();
         }
 
         public int CountErroredItems()
         {
-            PurchaseOrderQueueRepository purchaseOrderQueueRepository = new PurchaseOrderQueueRepository();
-            return purchaseOrderQueueRepository.CountErroredItems();
+            return _purchaseOrderQueueRepository.CountErroredItems();
         }
 
         public int ItemsInQueue()
         {
-            PurchaseOrderQueueRepository purchaseOrderQueueRepository = new PurchaseOrderQueueRepository();
-            return purchaseOrderQueueRepository.ItemsInQueue();
+            return _purchaseOrderQueueRepository.ItemsInQueue();
         }
 
     }

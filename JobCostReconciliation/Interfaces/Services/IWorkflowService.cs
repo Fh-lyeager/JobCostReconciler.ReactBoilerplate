@@ -6,7 +6,7 @@ namespace JobCostReconciliation.Interfaces.Services
 {
     public interface IWorkflowService
     {
-        Workflow GetSapphireWorkflow(string jobNumber);
-        List<Workflow> ListSapphireWorkflows();
+        Workflow GetWorkflow(string jobNumber);
+        List<Workflow> ListWorkflows();
     }
 }

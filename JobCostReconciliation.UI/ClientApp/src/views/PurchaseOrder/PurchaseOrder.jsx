@@ -32,7 +32,7 @@ import CardFooter from "components/Card/CardFooter.jsx";
 
 import { bugs, website, server } from "variables/general.jsx";
 
-import PurchaseOrderLastRun from "classes/PurchaseOrderLastRun.jsx";
+import PurchaseOrderLastRun from "functions/PurchaseOrderLastRun.jsx";
 
 import {
   dailySalesChart,
@@ -41,6 +41,8 @@ import {
 } from "variables/charts.jsx";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
+
+// https://documentation.fischermgmt.com/display/SAP/Audit+queries
 
 class PurchaseOrderPage extends React.Component {
   state = {

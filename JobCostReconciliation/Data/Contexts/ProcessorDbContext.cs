@@ -13,7 +13,7 @@ namespace JobCostReconciliation.Data.Contexts
         }
 
         public DbSet<PurchaseOrderLastRun> PurchaseOrderLastRuns { get; set; }
-        public DbSet<PurchaseOrderQueue> QueueItems { get; set; }
+        public DbSet<PurchaseOrderQueue> PurchaseOrderQueueItems { get; set; }
         public DbSet<Company> Companies { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -21,24 +21,11 @@ namespace JobCostReconciliation.Data.Contexts
             modelBuilder.HasDefaultSchema("dbo");
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
-            EfMapLastRun(modelBuilder);
             EfMapCompany(modelBuilder);
-            EfMapQueueItem(modelBuilder);
-
+            EfMapPurchaseOrderLastRun(modelBuilder);
+            EfMapPurchaseOrderQueueItem(modelBuilder);
+            
             base.OnModelCreating(modelBuilder);
-        }
-
-        private static void EfMapLastRun(DbModelBuilder modelBuilder)
-        {
-            var lastRun = modelBuilder.Entity<PurchaseOrderLastRun>();
-            lastRun.ToTable("NextRun");
-            lastRun.HasKey(k => k.NextRunId);
-        }
-
-        private static void EfMapQueueItem(DbModelBuilder modelBuilder)
-        {
-            var item = modelBuilder.Entity<PurchaseOrderQueue>();
-            item.ToTable("PO_Queue");
         }
 
         private static void EfMapCompany(DbModelBuilder modelBuilder)
@@ -47,5 +34,17 @@ namespace JobCostReconciliation.Data.Contexts
             comp.HasKey(k => k.CompanyId);
         }
 
+        private static void EfMapPurchaseOrderLastRun(DbModelBuilder modelBuilder)
+        {
+            var lastRun = modelBuilder.Entity<PurchaseOrderLastRun>();
+            lastRun.ToTable("NextRun");
+            lastRun.HasKey(k => k.NextRunId);
+        }
+
+        private static void EfMapPurchaseOrderQueueItem(DbModelBuilder modelBuilder)
+        {
+            var item = modelBuilder.Entity<PurchaseOrderQueue>();
+            item.ToTable("PO_Queue");
+        }
     }
 }

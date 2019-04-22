@@ -15,7 +15,7 @@ namespace JobCostReconciliation.Data.Repositories
         {
             using (var _db = new ProcessorDbContext())
             {
-                return _db.QueueItems
+                return _db.PurchaseOrderQueueItems
                     .Where(q => q.Status == QueueItemStatusType.Error);
             }
         }
@@ -24,7 +24,7 @@ namespace JobCostReconciliation.Data.Repositories
         {
             using (var _db = new ProcessorDbContext())
             {
-                return _db.QueueItems
+                return _db.PurchaseOrderQueueItems
                     .Where(q => q.Status == QueueItemStatusType.Error)
                     .Count();
             }
@@ -34,7 +34,7 @@ namespace JobCostReconciliation.Data.Repositories
         {
             using (var _db = new ProcessorDbContext())
             {
-                return _db.QueueItems
+                return _db.PurchaseOrderQueueItems
                     .OrderBy(o => o.Id)
                     .Where(q => q.Status == QueueItemStatusType.New)
                     //.Take(numberToLoad)
@@ -46,7 +46,7 @@ namespace JobCostReconciliation.Data.Repositories
         {
             using (var _db = new ProcessorDbContext())
             {
-                return _db.QueueItems.Count();
+                return _db.PurchaseOrderQueueItems.Count();
             }
         }
     }

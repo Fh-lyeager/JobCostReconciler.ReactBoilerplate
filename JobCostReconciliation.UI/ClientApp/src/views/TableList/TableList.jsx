@@ -9,7 +9,7 @@ import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
-import JobCostSummary from "classes/JobCostSummary.js";
+import JobCostSummary from "functions/JobCostSummary.jsx";
 
 const styles = {
     cardCategoryWhite: {

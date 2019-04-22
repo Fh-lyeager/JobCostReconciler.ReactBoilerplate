@@ -12,75 +12,53 @@ namespace JobCostReconciliation.Services
     public class WorkflowService : IWorkflowService
     {
         private readonly IWorkflowRepository _workflowRepository;
+        private readonly IJobRepository _jobRepository;
 
         public WorkflowService()
         {
             _workflowRepository = new WorkflowRepository();
+            _jobRepository = new JobRepository();
         }
 
-        public WorkflowService(IWorkflowRepository workflowRepository)
+        public WorkflowService(IWorkflowRepository workflowRepository, IJobRepository jobRepository)
         {
             _workflowRepository = workflowRepository;
+            _jobRepository = jobRepository;
         }
 
-        public Workflow MapWorkflow(DataRow workflowDataRow)
+        //public Workflow MapWorkflow(DataRow workflowDataRow)
+        //{
+        //    Workflow workflow = new Workflow();
+
+        //    workflow.WFlowRID = (int)workflowDataRow["WFlowRID"];
+        //    workflow.WFTempRID = (int)workflowDataRow["WFTempRID"];
+        //    workflow.Name = workflowDataRow["Name"].ToString();
+        //    workflow.RefObjType = workflowDataRow["RefObjType"].ToString();
+        //    workflow.RefObjRID = (int)workflowDataRow["RefObjRID"];
+        //    workflow.Status = workflowDataRow["Status"].ToString();
+        //    workflow.LastUpdated = (DateTime)workflowDataRow["LastUpdated"];
+        //    workflow.CreationDate = (DateTime)workflowDataRow["CreationDate"];
+        //    workflow.RetryCount = (int)workflowDataRow["RetryCount"];
+
+        //    return workflow;
+        //}
+
+
+        public Workflow GetWorkflow(string jobNumber = "")
         {
-            Workflow workflow = new Workflow();
-
-            workflow.WFlowRID = (int)workflowDataRow["WFlowRID"];
-            workflow.WFTempRID = (int)workflowDataRow["WFTempRID"];
-            workflow.Name = workflowDataRow["Name"].ToString();
-            workflow.RefObjType = workflowDataRow["RefObjType"].ToString();
-            workflow.RefObjRID = (int)workflowDataRow["RefObjRID"];
-            workflow.Status = workflowDataRow["Status"].ToString();
-            workflow.LastUpdated = (DateTime)workflowDataRow["LastUpdated"];
-            workflow.CreationDate = (DateTime)workflowDataRow["CreationDate"];
-            workflow.RetryCount = (int)workflowDataRow["RetryCount"];
-
-            return workflow;
+            return GetSapphireWorkflowByJobNumber(jobNumber);
         }
 
-
-        public Workflow GetSapphireWorkflow(string jobNumber = "")
+        public List<Workflow> ListWorkflows()
         {
-            DataTable sapphireWorkflow = GetSapphireWorkflowByJobNumber(jobNumber);
-
-            Workflow workflow = new Workflow();
-            if (sapphireWorkflow.AsEnumerable().Any())
-            {
-                workflow = MapWorkflow(sapphireWorkflow.Rows[0]);
-            }
-
-            return workflow;
+            return _workflowRepository.GetSapphireWorkflow();
         }
 
-        public List<Workflow> ListSapphireWorkflows()
+        private Workflow GetSapphireWorkflowByJobNumber(string jobNumber)
         {
-            var sapphireWorkflows = GetSapphireWorkflows();
-
-            List<Workflow> workflowList = new List<Workflow>();
-
-            if (!(sapphireWorkflows is null) && sapphireWorkflows.AsEnumerable().Any())
-            {
-                foreach (var sapphireWorkflow in sapphireWorkflows.AsEnumerable())
-                {
-                    Workflow workflow = MapWorkflow(sapphireWorkflow);
-                    workflowList.Add(workflow);
-                }
-            }
-
-            return workflowList;
-        }
-
-        private DataTable GetSapphireWorkflowByJobNumber(string jobNumber)
-        {
-            return _workflowRepository.GetSapphireWorkflow(jobNumber);
-        }
-
-        private DataTable GetSapphireWorkflows()
-        {
-            WorkflowRepository workflowRepository = new WorkflowRepository();
-            return workflowRepository.GetSapphireWorkflow();
+            // get homeRID for this jobNumber
+            int homeRID = _jobRepository.GetHomeRIDByJobNumber(jobNumber);
+            return _workflowRepository.GetSapphireWorkflow(homeRID).Single();
         }
     }
 }
