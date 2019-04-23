@@ -45,11 +45,12 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 
 class JobCostPage extends React.Component {
   state = {
-      value: 0,
-      workflows: [],
-      loadingWorkflows: true,
-      workflowQueue: [],
-      loadingWorkflowQueue: true
+    value: 0,
+    workflows: [],
+    loadingWorkflows: true,
+    workflowQueue: [],
+    loadingWorkflowQueue: true,
+    sentryEvents: []
   };
   handleChange = (event, value) => {
     this.setState({ value });
@@ -59,36 +60,83 @@ class JobCostPage extends React.Component {
     this.setState({ value: index });
   };
 
-    componentDidMount() {
-        this.getWorkflowData();
-        this.getWorkflowQueueItems();
+  componentDidMount() {
+    this.getWorkflowData();
+    this.getWorkflowQueueItems();
 
-        this.getWorkflowQueueItems("New");
-        this.getWorkflowQueueItems("Error");
-    }
+    this.getWorkflowQueueItems("New");
+    this.getWorkflowQueueItems("Error");
 
-    getWorkflowData() {
-        fetch('api/Workflow')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ workflows: data, loadingWorkflows: false});
-            });
-    }
+    this.getSentryEvents();
+  }
 
-    getWorkflowQueueItems() {
+  getWorkflowData() {
+    fetch('api/Workflow')
+        .then(response => response.json())
+        .then(data => {
+            this.setState({ workflows: data, loadingWorkflows: false});
+        });
+  }
 
-        fetch('api/WorkflowQueue')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ workflowQueue: data, loadingWorkflowQueue: false });
-            });
-    }
+  getWorkflowQueueItems() {
+      fetch('api/WorkflowQueue')
+          .then(response => response.json())
+          .then(data => {
+              this.setState({ workflowQueue: Array.from(data), loadingWorkflowQueue: false });
+          });
+  }
 
-    filterWorkflowQueue(workflowQueue, status) {
+  getSentryEvents() {
+    var url = "https://sentry.io/api/0/projects/fischer-homes/sapphire-workflow-processor/issues/";
+    var bearer = 'Bearer ' + bearer_token;
 
-        return workflowQueue.filter((workflowQueue) =>
-            status == workflowQueue.status);
-    }
+    fetch(url, {
+      method: 'GET',
+      withCredentials: true,
+      credentials: 'include',
+      headers: {
+        'Authorization': bearer,
+        'X-FP-API-KEY': 'iphone',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ sentryEvents: Array.from(data) });
+      });
+  }
+
+  filterWorkflowQueue(workflowQueue, status) {
+
+      return workflowQueue.filter((workflowQueue) =>
+          status == workflowQueue.status);
+  }
+
+  renderWorkflowQueue(workflowQueue) {
+
+    return (
+      <div>
+      <table>
+        <thead>
+          <tr>
+            <th>JobNumber</th>
+            <th>Sapphire Total</th>
+            <th>Pervasive Total</th>
+          </tr>
+        </thead>
+        <tbody>
+        {workflowQueue.map(job =>
+            <tr key={job.jobNumber}>
+              <td>{job.jobNumber}</td>
+              <td>{job.sapphireEgmTotal}</td>
+              <td>{job.pervasiveEgmTotal}</td>
+            </tr>
+          )}
+        </tbody>
+        </table>
+        </div>
+      )
+  }
     
 
   render() {
@@ -96,7 +144,7 @@ class JobCostPage extends React.Component {
     
       let numberWorkflows = this.state.loadingWorkflows ? "" : this.state.workflows.length;
 
-      let workflowQueueData = this.state.loadingWorkflowQueue ? [] : this.state.workflowQueue;
+      let workflowQueue = this.state.loadingWorkflowQueue ? [] : this.renderWorkflowQueue(this.state.workflowQueue);
       let numberWorkflowsProcessed = this.state.loadingWorkflowQueue ? "" : this.state.workflowQueue.length;
 
       let numberWorkflowsNew = this.state.loadingWorkflowQueue ? [] : this.filterWorkflowQueue(this.state.workflowQueue, "New").length;
@@ -182,6 +230,80 @@ class JobCostPage extends React.Component {
           </GridItem>
         </GridContainer>
         <GridContainer>
+          <GridItem xs={12} sm={12} md={6}>
+              <CustomTabs
+                title="Queue"
+                headerColor="primary"
+                tabs={[
+                        {
+                          tabName: "Queue",
+                          tabIcon: Code,
+                          tabContent: (
+                            <Table
+                              tableHeaderColor="warning"
+                              tableHead={["ID", "Name", "Salary", "Country"]}
+                              tableData={[
+                                ["1", "Dakota Rice", "$36,738", "Niger"]
+                              ]}
+                            />
+                                      )
+                        },
+                        {
+                          tabName: "Errors",
+                          tabIcon: Code,
+                          tabContent: (
+                            <Table
+                                tableHeaderColor="warning"
+                                tableHead={["ID", "Name", "Salary", "Country"]}
+                                tableData={[
+                                    ["1", "Dakota Rice", "$36,738", "Niger"],
+                                    ["2", "Minerva Hooper", "$23,789", "Curaçao"]
+                                ]}
+                            />
+                          )
+                        },
+                        {
+                          tabName: "Processed",
+                          tabIcon: Code,
+                          tabContent: (
+                              <Table
+                                  tableHeaderColor="warning"
+                                  tableHead={["ID", "Name", "Salary", "Country"]}
+                                  tableData={[
+                                      ["1", "Dakota Rice", "$36,738", "Niger"],
+                                      ["2", "Minerva Hooper", "$23,789", "Curaçao"],
+                                      ["3", "Sage Rodriguez", "$56,142", "Netherlands"]
+                                  ]}
+                              />
+                          )
+                      }
+                      ]}
+                  />
+          </GridItem>
+          <GridItem xs={12} sm={12} md={6}>
+              <Card>
+                  <CardHeader color="warning">
+                      <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
+                      <p className={classes.cardCategoryWhite}>
+                          New employees on 15th September, 2016
+          </p>
+                  </CardHeader>
+                  <CardBody>
+                      <Table
+                          tableHeaderColor="warning"
+                          tableHead={["ID", "Name", "Salary", "Country"]}
+                          tableData={[
+                              ["1", "Dakota Rice", "$36,738", "Niger"],
+                              ["2", "Minerva Hooper", "$23,789", "Curaçao"],
+                              ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
+                              ["4", "Philip Chaney", "$38,735", "Korea, South"]
+                          ]}
+                      />
+                  </CardBody>
+              </Card>
+          </GridItem>
+        </GridContainer>
+        <GridContainer>
           <GridItem xs={12} sm={12} md={4}>
             <Card chart>
               <CardHeader color="success">
@@ -258,89 +380,6 @@ class JobCostPage extends React.Component {
               </CardFooter>
             </Card>
           </GridItem>
-        </GridContainer>
-        <GridContainer>
-         
-                <GridItem xs={12} sm={12} md={6}>
-                    <CustomTabs
-                        title="Queue"
-                        headerColor="primary"
-                        tabs={[
-                            {
-                                tabName: "Queue",
-                                tabIcon: Code,
-                                tabContent: (
-                                    
-                                            <Table
-                                                tableHeaderColor="warning"
-                                                tableHead={["ID", "Name", "Salary", "Country"]}
-                                                tableData={[
-                                                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                                                    ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                                                    ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                                                    ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                                                ]}
-                                            />
-                                        
-                                        )
-                                    },
-                            {
-                                tabName: "Errors",
-                                tabIcon: Code,
-                                tabContent: (
-                                            <Table
-                                                tableHeaderColor="warning"
-                                                tableHead={["ID", "Name", "Salary", "Country"]}
-                                                tableData={[
-                                                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                                                    ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                                                    ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                                                    ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                                                ]}
-                                            />
-                                        )
-                            },
-                            {
-                                tabName: "Processed",
-                                tabIcon: Code,
-                                tabContent: (
-                                    <Table
-                                        tableHeaderColor="warning"
-                                        tableHead={["ID", "Name", "Salary", "Country"]}
-                                        tableData={[
-                                            ["1", "Dakota Rice", "$36,738", "Niger"],
-                                            ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                                            ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                                            ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                                        ]}
-                                    />
-                                )
-                            }
-                            ]}
-                        />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                    <Card>
-                        <CardHeader color="warning">
-                            <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
-                            <p className={classes.cardCategoryWhite}>
-                                New employees on 15th September, 2016
-                </p>
-                        </CardHeader>
-                        <CardBody>
-                            <Table
-                                tableHeaderColor="warning"
-                                tableHead={["ID", "Name", "Salary", "Country"]}
-                                tableData={[
-                                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                                    ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                                    ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                                    ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                                ]}
-                            />
-                        </CardBody>
-                    </Card>
-                </GridItem>
         </GridContainer>
       </div>
     );

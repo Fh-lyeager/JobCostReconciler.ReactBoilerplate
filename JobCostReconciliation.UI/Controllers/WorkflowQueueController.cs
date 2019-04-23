@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.Web.Http;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using JobCostReconciliation.Services;
 using JobCostReconciliation.Model;
@@ -11,19 +11,27 @@ namespace JobCostReconciliation.UI.Controllers
     [Route("admin/api/[controller]")]
     public class WorkflowQueueController : ControllerBase
     {
-
         // GET: api/WorkflowQueue
         [HttpGet]
-        public List<WorkflowQueue> Get()
+        public IEnumerable<WorkflowQueue> Get()
         {
             WorkflowQueueService _workflowQueueService = new WorkflowQueueService();
-            return _workflowQueueService.List();
+            List<WorkflowQueue> list = _workflowQueueService.List();
+
+            return Enumerable.Range(1, list.Count - 1).Select(i => new WorkflowQueue
+            {
+                Id = i,
+                RequestBody = list[i].RequestBody,
+                UtcDateTime = list[i].UtcDateTime,
+                Response = list[i].Response,
+                Status = list[i].Status
+            });
         }
 
         // GET: api/WorkflowQueue?status=Error
         [HttpGet]
         [Route("{status}")]
-        public List<WorkflowQueue> Get(string status)
+        public IEnumerable<WorkflowQueue> Get(string status)
         {
             if (!(Enum.TryParse(status, out QueueItemStatusType queueItemStatusType)))
             {
@@ -31,7 +39,16 @@ namespace JobCostReconciliation.UI.Controllers
             }
 
             WorkflowQueueService _workflowQueueService = new WorkflowQueueService();
-            return _workflowQueueService.List(queueItemStatusType);
+            List<WorkflowQueue> list = _workflowQueueService.List(queueItemStatusType);
+
+            return Enumerable.Range(1, list.Count - 1).Select(i => new WorkflowQueue
+            {
+                Id = i,
+                RequestBody = list[i].RequestBody,
+                UtcDateTime = list[i].UtcDateTime,
+                Response = list[i].Response,
+                Status = list[i].Status
+            });
         }
     }
 }

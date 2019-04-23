@@ -14,33 +14,21 @@ namespace JobCostReconciler.Controllers
     {
 
         [HttpGet("[action]/{jobNumber}")]
-        public Job JobTotals(string jobNumber)
+        public IEnumerable<Job> JobTotals(string jobNumber)
         {
             var job = jobNumber;
-
-            //job = "APT015810000";
 
             JobCostActivityService _jobCostActivityService = new JobCostActivityService();
             ReconciliationEgmTotals egmTotals = _jobCostActivityService.GetEgmAmountsByJobNumber(job);
 
-            var jobData = new Job
+            return Enumerable.Range(1, 1).Select(i => new Job
             {
-                id = egmTotals.HomeRID,
+                id = i,
                 jobNumber = egmTotals.JobNumber,
+                estimateApprovalDate = egmTotals.EstimateApprovalDate,
                 sapphireEgmTotal = Convert.ToDecimal(egmTotals.SapphireEgmTotal.ToString()).ToString("0.00"),
                 pervasiveEgmTotal = Convert.ToDecimal(egmTotals.PervasiveEgmTotal.ToString()).ToString("0.00")
-            };
-
-            return jobData;
-
-            //return Enumerable.Range(1,1).Select(i => new Job
-            //{
-            //    id = i,
-            //    jobNumber = egmTotals.JobNumber,
-            //    estimateApprovalDate = egmTotals.EstimateApprovalDate,
-            //    sapphireEgmTotal = Convert.ToDecimal(egmTotals.SapphireEgmTotal.ToString()).ToString("0.00"),
-            //    pervasiveEgmTotal = Convert.ToDecimal(egmTotals.PervasiveEgmTotal.ToString()).ToString("0.00")
-            //});
+            });
         }
 
         [HttpGet("[action]")]

@@ -4,12 +4,6 @@ import Button from 'components/CustomButtons/Button.jsx';
 
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
-import Table from "components/Table/Table.jsx";
-import TableHead from "@material-ui/core/TableHead";
-import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
-import TableRowColumn from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
@@ -17,24 +11,20 @@ import CardBody from "components/Card/CardBody.jsx";
 class JobCostSummaryPage extends React.Component {
     constructor(props, classes) {
         super(props, classes);
-        this.state = { jobTotals: [], loadingJobTotals: true, jobSummary: [], loadingJobSummary: true };
+        this.state = { jobSummary: [], loading: true };
         this.getJobSummary = this.getJobSummary.bind(this);
         this.getJobSummaryByJob = this.getJobSummaryByJob.bind(this);
     }
 
     getJobSummary() {
-        this.setState({loadingJobSummary: true});
-
         fetch('api/JobCost/WorkflowJobsEgmTotals')
-            .then(response => response)
+            .then(response => response.json())
             .then(data => {
-                this.setState({ jobSummary: Array.from(data), loadingJobSummary: false });
+              this.setState({ jobSummary: data, loading: false });
             });
     }
-
+    
     getJobSummaryByJob(jobNumber) {
-        this.setState({ loadingJobTotals: true });
-
         fetch('api/JobCost/JobTotals/'.concat('APT015810000'))
             .then(response => response.json())
             .then(data => {
@@ -67,62 +57,34 @@ class JobCostSummaryPage extends React.Component {
         )
     }
 
-    static renderJobTotals(jobTotals, classes) {
-        return (
-            <Card>
-                <CardHeader color="primary">
-                    <h4 className={classes.cardTitleWhite}>Job Cost Summary By Job</h4>
-                </CardHeader>
-                <CardBody>
-                    <Table 
-                        
-                    />
-                </CardBody>
-            </Card>
-        )
-    }
-
     render() {
 
         let jobCostSummary = this.state.jobSummary.length > 0 ? JobCostSummaryPage.renderJobCostSummary(this.state.jobSummary, this.props) : [];
-        let jobTotalsByJob = this.state.jobTotals != undefined && this.state.jobTotals != [] ? JobCostSummaryPage.renderJobTotals(this.state.jobTotals, this.props) : [];
 
         let classes = this.props;
         
 
         return (
             <div>
-                <input ref="jobNumberInput" type="text" placeholder="Job Number" />
-                <Button
-                    className="Button"
-                    color="info"
-                    onClick={() => {
-                        this.getJobSummaryByJob(this.refs.jobNumberInput.value);
-                    }}>
-                    Get Job Cost Summary
-                    </Button>
                 <GridContainer>
-                    <GridItem xs={12} sm={12} md={12}>
-                        {jobTotalsByJob}
-                    </GridItem>
                     <GridItem xs={12} sm={12} md={12}>
                         <Button
                             className="Button"
-                            color="info"
+                            color="primary"
                             onClick={() => {
                                 this.getJobSummary();
                             }}>
-                            Get Job Cost Summary
+                            Get Job Cost Summary Report
                         </Button>
-                            <Card>
-                                <CardHeader color="primary">
-                                    <h4 className={classes.cardTitleWhite}>Job Cost Summary</h4>
-                                </CardHeader>
+                        <Card>
+                            <CardHeader color="primary">
+                                <h4 className={classes.cardTitleWhite}>Job Cost Summary</h4>
+                            </CardHeader>
                             {jobCostSummary}
                         </Card>
                     </GridItem>
                 </GridContainer>
-                </div>
+            </div>
         );
     }
 }
