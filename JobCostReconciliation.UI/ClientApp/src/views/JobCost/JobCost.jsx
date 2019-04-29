@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import Pagination from "react-js-pagination";
 import PropTypes from "prop-types";
-// react plugin for creating charts
-import ChartistGraph from "react-chartist";
 // @material-ui/core
 import withStyles from "@material-ui/core/styles/withStyles";
 import Icon from "@material-ui/core/Icon";
@@ -9,15 +9,15 @@ import Icon from "@material-ui/core/Icon";
 import Store from "@material-ui/icons/Store";
 import Warning from "@material-ui/icons/Warning";
 import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
 import Update from "@material-ui/icons/Update";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
-import Cloud from "@material-ui/icons/Cloud";
+import Queue from "@material-ui/icons/Queue";
 // core components
+import Button from 'components/CustomButtons/Button.jsx';
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Table from "components/Table/Table.jsx";
@@ -29,19 +29,47 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-
-
 import WorkflowData from "functions/Workflow.jsx";
-
 import { bugs, website, server } from "variables/general.jsx";
-
 import {
   dailySalesChart,
   emailsSubscriptionChart,
   completedTasksChart
 } from "variables/charts.jsx";
-
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
+import 'jquery/src/jquery';
+require("jquery");
+require("bootstrap-less");
+
+const styles = {
+  cardCategoryWhite: {
+    "&,& a,& a:hover,& a:focus": {
+      color: "rgba(255,255,255,.62)",
+      margin: "0",
+      fontSize: "14px",
+      marginTop: "0",
+      marginBottom: "0"
+    },
+    "& a,& a:hover,& a:focus": {
+      color: "#FFFFFF"
+    }
+  },
+  cardTitleWhite: {
+    color: "#FFFFFF",
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none",
+    "& small": {
+      color: "#777",
+      fontSize: "65%",
+      fontWeight: "400",
+      lineHeight: "1"
+    }
+  }
+};
 
 class JobCostPage extends React.Component {
   state = {
@@ -50,7 +78,15 @@ class JobCostPage extends React.Component {
     loadingWorkflows: true,
     workflowQueue: [],
     loadingWorkflowQueue: true,
-    sentryEvents: []
+    sentryEvents: [],
+    loadingSentryEvents: true,
+    workflowJobSummary: [], 
+    loadingWorkflowJobSummary: true,
+    jobData: [],
+    loadingJobData: true,
+    jobTotals: [],
+    loadingJobTotals: true,
+    activePage: 1
   };
   handleChange = (event, value) => {
     this.setState({ value });
@@ -60,96 +96,156 @@ class JobCostPage extends React.Component {
     this.setState({ value: index });
   };
 
+  handlePageChange(pageNumber) {
+    console.log(`active page is ${pageNumber}`);
+    this.setState({ activePage: pageNumber });
+  }
+
   componentDidMount() {
-    this.getWorkflowData();
-    this.getWorkflowQueueItems();
+    if (this.state.workflows.length === 0) {
+      this.getWorkflowData();
+    }
 
-    this.getWorkflowQueueItems("New");
-    this.getWorkflowQueueItems("Error");
+    if (this.state.workflowQueue.length === 0) {
+      this.getWorkflowQueueItems();
+    }
 
-    this.getSentryEvents();
+    if (this.state.workflowJobSummary.length === 0) {
+      this.getWorkflowJobSummary();
+    }
   }
 
   getWorkflowData() {
     fetch('api/Workflow')
-        .then(response => response.json())
-        .then(data => {
-            this.setState({ workflows: data, loadingWorkflows: false});
-        });
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ workflows: data, loadingWorkflows: false });
+      });
   }
 
   getWorkflowQueueItems() {
       fetch('api/WorkflowQueue')
           .then(response => response.json())
           .then(data => {
-              this.setState({ workflowQueue: Array.from(data), loadingWorkflowQueue: false });
+              this.setState({ workflowQueue: data, loadingWorkflowQueue: false });
           });
   }
 
   getSentryEvents() {
-    var url = "https://sentry.io/api/0/projects/fischer-homes/sapphire-workflow-processor/issues/";
-    var bearer = 'Bearer ' + bearer_token;
+    var url = 'https://sentry.io/api/0/projects/fischer-homes/sapphire-workflow-processor/events/?sentry_key=d6c4cc26a4a14211bde1206019bca81f';
+
+    //var url = 'https://sentry.io/api/1444156/projects/fischer-homes/sapphire-workflow-processor/events/?sentry_key=d6c4cc26a4a14211bde1206019bca81f';
+
+    var bearer = 'Bearer e2c2124126af4c28970c75a54f6975159adaf54e9971416ea2434292c53f1180';
+    var dsn = 'DSN https://d6c4cc26a4a14211bde1206019bca81f@sentry.io/1444156';
 
     fetch(url, {
       method: 'GET',
-      withCredentials: true,
       credentials: 'include',
       headers: {
-        'Authorization': bearer,
-        'X-FP-API-KEY': 'iphone',
-        'Content-Type': 'application/json'
-      }
+        'access-control-allow-credentials': true,
+        'authorization': bearer
+      }      
     })
-      .then(response => response.json())
+      .then(response => response)
       .then(data => {
-        this.setState({ sentryEvents: Array.from(data) });
-      });
+        this.setState({ sentryEvents: Array.from(data), loadingSentryEvents: false });
+      })
+      .catch(error => { console.log(error) });
   }
 
   filterWorkflowQueue(workflowQueue, status) {
 
       return workflowQueue.filter((workflowQueue) =>
-          status == workflowQueue.status);
+          status === workflowQueue.status);
   }
 
-  renderWorkflowQueue(workflowQueue) {
+  getWorkflowJobSummary() {
+    fetch('api/JobCost/WorkflowJobCostSummary')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ workflowJobSummary: data, loadingWorkflowJobSummary: false });
+      });
+  }
 
+  getJobSummaryByJob(jobNumber) {
+    fetch('api/JobCost/JobTotals/'.concat(jobNumber))
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ jobTotals: data, loadingJobTotals: false });
+      });
+  }
+
+  getJobSummaryByHomeRID(homeRID) {
+    fetch('api/JobCost/JobData/'.concat(homeRID))
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ jobData: data, loadingJobData: false });
+      });
+  }
+
+  renderSentryEventList(sentryEventList) {
     return (
       <div>
-      <table>
-        <thead>
-          <tr>
-            <th>JobNumber</th>
-            <th>Sapphire Total</th>
-            <th>Pervasive Total</th>
-          </tr>
-        </thead>
+        {sentryEventList}
+      </div>
+      )
+  }
+
+  static renderWorkflowQueue(workflowQueue,  page_number = 1) {
+
+    var page_size = 8;
+    var queueData = workflowQueue.slice((page_number-1) * page_size, page_number * page_size);
+
+    return (
         <tbody>
-        {workflowQueue.map(job =>
-            <tr key={job.jobNumber}>
-              <td>{job.jobNumber}</td>
-              <td>{job.sapphireEgmTotal}</td>
-              <td>{job.pervasiveEgmTotal}</td>
-            </tr>
+        {queueData.map(item =>
+            <tr key={item.id}>
+              <td>{item.id}</td>
+            <td>{item.wFlowRID}</td>
+            <td>{item.refObjRID}</td>
+            <td>{item.status}</td>
+          </tr>
           )}
         </tbody>
-        </table>
-        </div>
       )
+  }
+
+  static renderJobCostSummary(jobSummary, page_number = 1) {
+
+    var page_size = 8;
+    var jobSummaryData = jobSummary.slice((page_number - 1) * page_size, page_number * page_size);
+
+    return (
+      <tbody>
+        {jobSummaryData.map(job =>
+          <tr key={job.id}>
+            <td>{job.jobNumber}</td>
+            <td>{job.sapphireEgmTotal}</td>
+            <td>{job.pervasiveEgmTotal}</td>
+            <td></td>
+          </tr>
+        )}
+      </tbody>
+    )
   }
     
 
   render() {
-      const { classes } = this.props;
+    const { classes } = this.props;
     
-      let numberWorkflows = this.state.loadingWorkflows ? "" : this.state.workflows.length;
+    let numberWorkflows = this.state.loadingWorkflows ? "" : this.state.workflows.length;
 
-      let workflowQueue = this.state.loadingWorkflowQueue ? [] : this.renderWorkflowQueue(this.state.workflowQueue);
-      let numberWorkflowsProcessed = this.state.loadingWorkflowQueue ? "" : this.state.workflowQueue.length;
+    let queueData = this.state.loadingWorkflowQueue ? [] : JobCostPage.renderWorkflowQueue(this.state.workflowQueue);
+    let numberWorkflowsProcessed = this.state.loadingWorkflowQueue ? "" : this.state.workflowQueue.length;
 
-      let numberWorkflowsNew = this.state.loadingWorkflowQueue ? [] : this.filterWorkflowQueue(this.state.workflowQueue, "New").length;
-      let numberWorkflowsError = this.state.loadingWorkflowQueue ? [] : this.filterWorkflowQueue(this.state.workflowQueue, "Error").length;
+    let numberWorkflowsNew = this.state.loadingWorkflowQueue ? [] : this.filterWorkflowQueue(this.state.workflowQueue, "New").length;
+    let numberWorkflowsError = this.state.loadingWorkflowQueue ? [] : this.filterWorkflowQueue(this.state.workflowQueue, "Error").length;
+    let errorQueueData = this.state.loadingWorkflowQueue ? [] : JobCostPage.renderWorkflowQueue(this.filterWorkflowQueue(this.state.workflowQueue, "Error"));
 
+    let workflowJobCostSummary = this.state.workflowJobSummary.length > 0 ? JobCostPage.renderJobCostSummary(this.state.workflowJobSummary) : [];
+
+    let jobTotals = this.state.jobTotals.length > 0 ? JobCostPage.renderJobCostSummary(this.state.jobTotals) : [];
 
     return (
       <div>
@@ -200,13 +296,13 @@ class JobCostPage extends React.Component {
                 <CardIcon color="danger">
                   <Icon>info_outline</Icon>
                 </CardIcon>
-                <p className={classes.cardCategory}>Errors</p>
-                <h3 className={classes.cardTitle}>75</h3>
+                <p className={classes.cardCategory}>Exceptions</p>
+                <h3 className={classes.cardTitle}>5</h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
-                  <LocalOffer />
-                  Tracked from Github
+                  <Accessibility />
+                  Tracked from Sentry.io
                 </div>
               </CardFooter>
             </Card>
@@ -217,7 +313,7 @@ class JobCostPage extends React.Component {
                 <CardIcon color="info">
                   <Accessibility />
                 </CardIcon>
-                <p className={classes.cardCategory}>Followers</p>
+                <p className={classes.cardCategory}>Errors</p>
                             <h3 className={classes.cardTitle}>{numberWorkflowsError}</h3>
               </CardHeader>
               <CardFooter stats>
@@ -231,153 +327,103 @@ class JobCostPage extends React.Component {
         </GridContainer>
         <GridContainer>
           <GridItem xs={12} sm={12} md={6}>
-              <CustomTabs
-                title="Queue"
-                headerColor="primary"
-                tabs={[
-                        {
-                          tabName: "Queue",
-                          tabIcon: Code,
-                          tabContent: (
-                            <Table
-                              tableHeaderColor="warning"
-                              tableHead={["ID", "Name", "Salary", "Country"]}
-                              tableData={[
-                                ["1", "Dakota Rice", "$36,738", "Niger"]
-                              ]}
-                            />
-                                      )
-                        },
-                        {
-                          tabName: "Errors",
-                          tabIcon: Code,
-                          tabContent: (
-                            <Table
-                                tableHeaderColor="warning"
-                                tableHead={["ID", "Name", "Salary", "Country"]}
-                                tableData={[
-                                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                                    ["2", "Minerva Hooper", "$23,789", "Curaçao"]
-                                ]}
-                            />
-                          )
-                        },
-                        {
-                          tabName: "Processed",
-                          tabIcon: Code,
-                          tabContent: (
-                              <Table
-                                  tableHeaderColor="warning"
-                                  tableHead={["ID", "Name", "Salary", "Country"]}
-                                  tableData={[
-                                      ["1", "Dakota Rice", "$36,738", "Niger"],
-                                      ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                                      ["3", "Sage Rodriguez", "$56,142", "Netherlands"]
-                                  ]}
-                              />
-                          )
-                      }
-                      ]}
-                  />
+            <CustomTabs
+              headerTitle="Workflow Queue"
+              headerColor="primary"
+              tabs={[
+                {
+                  tabName: "Queue",
+                  tabIcon: Queue,
+                  tabContent: (
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th align="left">Queue ID</th>
+                          <th align="left">WorkflowRID</th>
+                          <th align="left">RefObjRID</th>
+                          <th align="left">Status</th>
+                        </tr>
+                      </thead>
+                      {queueData}
+                    </table>
+                  )
+                },
+                {
+                  tabName: "Errors",
+                  tabIcon: Code,
+                  tabContent: (
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th align="left">Queue ID</th>
+                          <th align="left">WorkflowRID</th>
+                          <th align="left">RefObjRID</th>
+                          <th align="left">Status</th>
+                        </tr>
+                      </thead>
+                      {errorQueueData}
+                    </table>
+                  )
+                },
+                {
+                  tabName: "Processed",
+                  tabIcon: Code,
+                  tabContent: (
+                    <CardBody>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th align="left">JobNumber</th>
+                          <th align="left">Sapphire Total</th>
+                          <th align="left">Pervasive Total</th>
+                        </tr>
+                      </thead>
+                      {workflowJobCostSummary}
+                    </table>
+                      <Pagination
+                          activePage={this.state.activePage}
+                          itemsCountPerPage={8}
+                          totalItemsCount={this.state.workflowJobSummary.length}
+                          pageRangeDisplayed={5}
+                          onChange={this.handlePageChange}
+                      />
+                      </CardBody>
+                  )
+              }
+              ]}
+            />
           </GridItem>
           <GridItem xs={12} sm={12} md={6}>
-              <Card>
-                  <CardHeader color="warning">
-                      <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
-                      <p className={classes.cardCategoryWhite}>
-                          New employees on 15th September, 2016
-          </p>
-                  </CardHeader>
-                  <CardBody>
-                      <Table
-                          tableHeaderColor="warning"
-                          tableHead={["ID", "Name", "Salary", "Country"]}
-                          tableData={[
-                              ["1", "Dakota Rice", "$36,738", "Niger"],
-                              ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                              ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                              ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                          ]}
-                      />
-                  </CardBody>
-              </Card>
-          </GridItem>
-        </GridContainer>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={4}>
-            <Card chart>
-              <CardHeader color="success">
-                <ChartistGraph
-                  className="ct-chart"
-                  data={dailySalesChart.data}
-                  type="Line"
-                  options={dailySalesChart.options}
-                  listener={dailySalesChart.animation}
-                />
-              </CardHeader>
-              <CardBody>
-                <h4 className={classes.cardTitle}>Daily Sales</h4>
-                <p className={classes.cardCategory}>
-                  <span className={classes.successText}>
-                    <ArrowUpward className={classes.upArrowCardCategory} /> 55%
-                  </span>{" "}
-                  increase in today sales.
-                </p>
-              </CardBody>
-              <CardFooter chart>
-                <div className={classes.stats}>
-                  <AccessTime /> updated 4 minutes ago
-                </div>
-              </CardFooter>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={4}>
-            <Card chart>
+            <Card>
               <CardHeader color="warning">
-                <ChartistGraph
-                  className="ct-chart"
-                  data={emailsSubscriptionChart.data}
-                  type="Bar"
-                  options={emailsSubscriptionChart.options}
-                  responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                  listener={emailsSubscriptionChart.animation}
-                />
-              </CardHeader>
-              <CardBody>
-                <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-                <p className={classes.cardCategory}>
-                  Last Campaign Performance
-                </p>
-              </CardBody>
-              <CardFooter chart>
-                <div className={classes.stats}>
-                  <AccessTime /> campaign sent 2 days ago
+                <h4 className={classes.cardTitleWhite}>Job Cost Details</h4>
+                <div>
+                  <input ref="jobNumberInput" type="text" size="15" />
+                    <Button
+                      className="Button"
+                      color="primary"
+                      size="sm"
+                      onClick={() => {
+                        this.getJobSummaryByJob(this.refs.jobNumberInput.value);
+                      }}>
+                      Search
+                    </Button>
                 </div>
-              </CardFooter>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={4}>
-            <Card chart>
-              <CardHeader color="danger">
-                <ChartistGraph
-                  className="ct-chart"
-                  data={completedTasksChart.data}
-                  type="Line"
-                  options={completedTasksChart.options}
-                  listener={completedTasksChart.animation}
-                />
-              </CardHeader>
-              <CardBody>
-                <h4 className={classes.cardTitle}>Completed Tasks</h4>
-                <p className={classes.cardCategory}>
-                  Last Campaign Performance
-                </p>
+              <p className={classes.cardCategoryWhite}>
+              </p>
+                </CardHeader>
+                <CardBody>
+                <table width="100%">
+                  <thead>
+                    <tr>
+                      <th align="left">JobNumber</th>
+                      <th align="left">Sapphire Total</th>
+                      <th align="left">Pervasive Total</th>
+                    </tr>
+                  </thead>
+                  {jobTotals}
+                </table>
               </CardBody>
-              <CardFooter chart>
-                <div className={classes.stats}>
-                  <AccessTime /> campaign sent 2 days ago
-                </div>
-              </CardFooter>
             </Card>
           </GridItem>
         </GridContainer>

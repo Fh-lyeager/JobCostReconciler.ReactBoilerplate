@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Button from 'components/CustomButtons/Button.jsx';
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 // @material-ui/core
@@ -254,9 +255,18 @@ class Dashboard extends React.Component {
           <GridItem xs={12} sm={12} md={6}>
             <Card>
               <CardHeader color="warning">
-                <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
+                <h4 className={classes.cardTitleWhite}>Job Cost Details</h4>
+                <input ref="jobNumberInput" type="text" />
+                <Button
+                  className="Button"
+                  color="primary"
+                  size="sm"
+                  onClick={() => {
+                    this.getJobSummaryByJob(this.refs.jobNumberInput.value);
+                  }}>
+                  Search
+                </Button>
                 <p className={classes.cardCategoryWhite}>
-                  New employees on 15th September, 2016
                 </p>
               </CardHeader>
               <CardBody>

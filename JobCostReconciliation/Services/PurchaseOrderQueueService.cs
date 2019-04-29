@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 using JobCostReconciliation.Interfaces.Repositories;
 using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Data.Repositories;
@@ -19,20 +20,14 @@ namespace JobCostReconciliation.Services
             _purchaseOrderQueueRepository = purchaseOrderQueueRepository;
         }
 
-        public IQueryable<PurchaseOrderQueue> GetErroredItems()
+        public IList<PurchaseOrderQueue> GetErroredItems()
         {
-            return _purchaseOrderQueueRepository.GetErroredItems();
+            return _purchaseOrderQueueRepository.List(Model.Enums.QueueItemStatusType.Error);
         }
 
-        public int CountErroredItems()
+        public IList<PurchaseOrderQueue> GetNewItems()
         {
-            return _purchaseOrderQueueRepository.CountErroredItems();
+            return _purchaseOrderQueueRepository.List(Model.Enums.QueueItemStatusType.New);
         }
-
-        public int ItemsInQueue()
-        {
-            return _purchaseOrderQueueRepository.ItemsInQueue();
-        }
-
     }
 }

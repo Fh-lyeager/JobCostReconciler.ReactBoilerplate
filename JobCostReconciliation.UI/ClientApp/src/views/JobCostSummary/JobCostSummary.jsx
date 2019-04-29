@@ -17,7 +17,7 @@ class JobCostSummaryPage extends React.Component {
     }
 
     getJobSummary() {
-        fetch('api/JobCost/WorkflowJobsEgmTotals')
+      fetch('api/JobCost/WorkflowJobCostSummary')
             .then(response => response.json())
             .then(data => {
               this.setState({ jobSummary: data, loading: false });

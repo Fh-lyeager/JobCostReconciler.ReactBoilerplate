@@ -1,37 +1,33 @@
 ﻿using System;
-using System.Configuration;
-using SharpRaven;
-using SharpRaven.Data;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using JobCostReconciliation.Data.Clients;
+using JobCostReconciliation.Interfaces.Clients;
 using JobCostReconciliation.Interfaces.Services;
+
 
 namespace JobCostReconciliation.Services
 {
     public class SentryEventService : ISentryEventService
     {
-        private readonly RavenClient _ravenClient;
+        private readonly ISentryEventClient _sentryEventClient;
 
         public SentryEventService()
         {
-            _ravenClient = new RavenClient(ConfigurationManager.AppSettings["Sentry"]);
+            _sentryEventClient = new SentryEventClient();
         }
 
-        public void LogError(Exception exception)
+        public DataTable GetEvents()
         {
-            _ravenClient.Capture(new SentryEvent(exception));
-        }
+            DataTable dataTable = new DataTable();
 
-        /*  USAGE
-        *  dynamic eventObj = new ExpandoObject();
-        *  eventObj.SapphireRecordsLoaded = nextBatchToProcess.Count;
-        *  _sentryEventService.LogCustomInfoEvent($"Records written to queue for LastRun {mostRecentNextRun.RunComplete}", eventObj);
-       */
-        public void LogCustomInfoEvent(string messageForEvent, dynamic eventObj)
-        {
-            _ravenClient.Capture(new SentryEvent(messageForEvent)
-            {
-                Level = ErrorLevel.Info,
-                Extra = eventObj
-            });
+            
+
+
+            return dataTable;
         }
     }
 }

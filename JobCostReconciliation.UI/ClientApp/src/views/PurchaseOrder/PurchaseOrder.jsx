@@ -31,14 +31,12 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
 import { bugs, website, server } from "variables/general.jsx";
-
-import PurchaseOrderLastRun from "functions/PurchaseOrderLastRun.jsx";
-
 import {
   dailySalesChart,
   emailsSubscriptionChart,
   completedTasksChart
 } from "variables/charts.jsx";
+import { purchaseOrderProcessorChart } from "variables/pocharts.jsx";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
@@ -46,11 +44,13 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 
 class PurchaseOrderPage extends React.Component {
   state = {
-      value: 0,
-      purchaseOrderLastRun: this.getPurchaseOrderLastRun(),
-      purchaseOrderNextRun: this.getPurchaseOrderNextRun(),
-      itemsInQueue: this.getItemsInQueue(),
-      failedRecords: this.getFailedRecords()
+    value: 0,
+    purchaseOrderLastRun: [],
+    purchaseOrderNextRun: [],
+    purchaseOrderNextRuns: [],
+    purchaseOrderQueueItems: [],
+      itemsInQueue: [],
+      failedRecords: []
   };
   handleChange = (event, value) => {
     this.setState({ value });
@@ -59,6 +59,22 @@ class PurchaseOrderPage extends React.Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
+
+  componentDidMount() {
+    this.getPurchaseOrderLastRun();
+    this.getPurchaseOrderNextRun();
+    this.getPurchaseOrderLastRuns();
+    this.getItemsInQueue();
+    this.getFailedRecords();
+  }
+
+  getPurchaseOrderLastRuns() {
+    fetch('api/PurchaseOrderQueue')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ purchaseOrderNextRuns: data });
+      });
+  }
 
     getPurchaseOrderNextRun() {
         fetch('api/PurchaseOrderQueue/NextRun')
@@ -92,9 +108,32 @@ class PurchaseOrderPage extends React.Component {
             });
     }
 
+  static renderPurchaseOrderLastRuns(purchaseOrderNextRuns, pageNumber = 1) {
+    var pageSize = 8;
+    var nextRunData = purchaseOrderNextRuns.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+    return (
+      <tbody>
+        {nextRunData.map(item =>
+          <tr key={item.nextRunId}>
+            <td>{item.nextRunId}</td>
+            <td>{item.runComplete}</td>
+            <td>{item.status}</td>
+          </tr>
+        )}
+      </tbody>
+      )
+  }
+
 
     render() {
-    const { classes } = this.props;
+      let classes = this.props;
+      let runs = !(this.state.purchaseOrderRuns === undefined) && this.state.purchaseOrderNextRuns.length < 1 ? [] : PurchaseOrderPage.renderPurchaseOrderLastRuns(this.state.purchaseOrderNextRuns);
+      let purchaseOrderNextRun = this.state.purchaseOrderNextRun.length < 1 ? "" : this.state.purchaseOrderNextRun;
+
+      let purchaseOrderQueue = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems;
+
+
     return (
       <div>
         <GridContainer>
@@ -106,7 +145,7 @@ class PurchaseOrderPage extends React.Component {
                 </CardIcon>
                 <p className={classes.cardCategory}>Next Run</p>
                 <h3 className={classes.cardTitle}>
-                    {this.state.purchaseOrderNextRun}
+                  {purchaseOrderNextRun}
                 </h3>
               </CardHeader>
               <CardFooter stats>
@@ -162,19 +201,16 @@ class PurchaseOrderPage extends React.Component {
               <CardHeader color="success">
                 <ChartistGraph
                   className="ct-chart"
-                  data={dailySalesChart.data}
+                  data={purchaseOrderProcessorChart.data}
                   type="Line"
-                  options={dailySalesChart.options}
-                  listener={dailySalesChart.animation}
+                  options={purchaseOrderProcessorChart.options}
+                  listener={purchaseOrderProcessorChart.animation}
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Daily Sales</h4>
+                <h4 className={classes.cardTitle}>Purchase Order Processor</h4>
                 <p className={classes.cardCategory}>
-                  <span className={classes.successText}>
-                    <ArrowUpward className={classes.upArrowCardCategory} /> 55%
-                  </span>{" "}
-                  increase in today sales.
+                  
                 </p>
               </CardBody>
               <CardFooter chart>
@@ -197,7 +233,7 @@ class PurchaseOrderPage extends React.Component {
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Email Subscriptions</h4>
+                <h4 className={classes.cardTitle}>Exceptions</h4>
                 <p className={classes.cardCategory}>
                   Last Campaign Performance
                 </p>
@@ -279,22 +315,22 @@ class PurchaseOrderPage extends React.Component {
           <GridItem xs={12} sm={12} md={6}>
             <Card>
               <CardHeader color="warning">
-                <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
+                <h4 className={classes.cardTitleWhite}>Completed Runs</h4>
                 <p className={classes.cardCategoryWhite}>
                   New employees on 15th September, 2016
                 </p>
               </CardHeader>
               <CardBody>
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={["ID", "Name", "Salary", "Country"]}
-                  tableData={[
-                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                    ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                    ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                    ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                  ]}
-                />
+                <table width="100%">
+                  <thead>
+                    <tr>
+                      <th align="left">ID</th>
+                      <th align="left">Date</th>
+                      <th align="left">Status</th>
+                    </tr>
+                  </thead>
+                  {runs}
+                </table>
               </CardBody>
             </Card>
           </GridItem>

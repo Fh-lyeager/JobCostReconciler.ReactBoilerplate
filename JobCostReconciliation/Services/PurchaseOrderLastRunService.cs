@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using JobCostReconciliation.Interfaces.Repositories;
 using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Data.Repositories;
+using JobCostReconciliation.Model;
 
 namespace JobCostReconciliation.Services
 {
@@ -11,7 +14,7 @@ namespace JobCostReconciliation.Services
 
         public PurchaseOrderLastRunService()
         {
-
+            _purchaseOrderLastRunRepository = new PurchaseOrderLastRunRepository();
         }
 
         public PurchaseOrderLastRunService(IPurchaseOrderLastRunRepository purchaseOrderLastRunRepository)
@@ -21,8 +24,15 @@ namespace JobCostReconciliation.Services
 
         public DateTime GetLastRun()
         {
-            PurchaseOrderLastRunRepository purchaseOrderLastRunRepository = new PurchaseOrderLastRunRepository();
-            return purchaseOrderLastRunRepository.GetLastRunTime();
+            return _purchaseOrderLastRunRepository.GetLastRuns().AsEnumerable()
+                .OrderByDescending(o => o.NextRunId)
+                .Select(d => d.RunComplete)
+                .First();
+        }
+
+        public List<PurchaseOrderLastRun> List()
+        {
+            return _purchaseOrderLastRunRepository.GetLastRuns().ToList();
         }
     }
 }

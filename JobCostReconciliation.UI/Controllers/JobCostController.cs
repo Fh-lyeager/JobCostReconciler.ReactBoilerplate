@@ -14,14 +14,28 @@ namespace JobCostReconciler.Controllers
     {
 
         [HttpGet("[action]/{jobNumber}")]
-        public IEnumerable<Job> JobTotals(string jobNumber)
+        public IEnumerable<JobCostSummary> JobTotals(string jobNumber)
         {
-            var job = jobNumber;
-
             JobCostActivityService _jobCostActivityService = new JobCostActivityService();
-            ReconciliationEgmTotals egmTotals = _jobCostActivityService.GetEgmAmountsByJobNumber(job);
+            ReconciliationEgmTotals egmTotals = _jobCostActivityService.GetEgmAmounts(jobNumber);
 
-            return Enumerable.Range(1, 1).Select(i => new Job
+            return Enumerable.Range(1, 1).Select(i => new JobCostSummary
+            {
+                id = i,
+                jobNumber = egmTotals.JobNumber,
+                estimateApprovalDate = egmTotals.EstimateApprovalDate,
+                sapphireEgmTotal = Convert.ToDecimal(egmTotals.SapphireEgmTotal.ToString()).ToString("0.00"),
+                pervasiveEgmTotal = Convert.ToDecimal(egmTotals.PervasiveEgmTotal.ToString()).ToString("0.00")
+            });
+        }
+
+        [HttpGet("[action]/{homeRID}")]
+        public IEnumerable<JobCostSummary> JobData(int homeRID)
+        {
+            JobCostActivityService _jobCostActivityService = new JobCostActivityService();
+            ReconciliationEgmTotals egmTotals = _jobCostActivityService.GetEgmAmountsByHomeRID(homeRID);
+
+            return Enumerable.Range(1, 1).Select(i => new JobCostSummary
             {
                 id = i,
                 jobNumber = egmTotals.JobNumber,
@@ -32,12 +46,12 @@ namespace JobCostReconciler.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<Job> WorkflowJobsEgmTotals()
+        public IEnumerable<JobCostSummary> WorkflowJobCostSummary()
         {
             JobCostActivityService _jobCostActivityService = new JobCostActivityService();
             List<ReconciliationEgmTotals> egmTotals = _jobCostActivityService.GetWorkflowJobs();
 
-            return Enumerable.Range(1, egmTotals.Count-1).Select(i => new Job
+            return Enumerable.Range(1, egmTotals.Count-1).Select(i => new JobCostSummary
             {
                 id = i,
                 jobNumber = egmTotals[i].JobNumber,
@@ -46,7 +60,7 @@ namespace JobCostReconciler.Controllers
             });
         }
 
-        public class Job
+        public class JobCostSummary
         {
             public int id { get; set; }
             public string jobNumber { get; set; }

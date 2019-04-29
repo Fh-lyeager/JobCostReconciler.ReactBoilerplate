@@ -16,5 +16,16 @@ namespace JobCostReconciliation.Data.Repositories
                     .FirstOrDefault();
             }
         }
+
+        public string GetJobNumberByHomeRID(int homeRID)
+        {
+            using (var _db = new SapphireDbContext())
+            {
+                return _db.Jobs
+                    .Where(j => j.HomeRID.Equals(homeRID))
+                    .Select(j => j.JobID.Substring(0,12))
+                    .FirstOrDefault();
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using JobCostReconciliation.Services;
 using JobCostReconciliation.Model;
@@ -13,16 +14,30 @@ namespace JobCostReconciliation.UI.Controllers
         [HttpGet]
         public List<Workflow> Get()
         {
-            WorkflowService _workflowService = new WorkflowService();
-            return _workflowService.ListWorkflows();
+            try
+            {
+                WorkflowService _workflowService = new WorkflowService();
+                return _workflowService.ListWorkflows();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         // GET: api/Workflow/5
         [HttpGet("{jobNumber}", Name = "Get")]
         public Workflow Get(string jobNumber)
         {
-            WorkflowService _workflowService = new WorkflowService();
-            return _workflowService.GetWorkflow(jobNumber);
+            try
+            {
+                WorkflowService _workflowService = new WorkflowService();
+                return _workflowService.GetWorkflow(jobNumber);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

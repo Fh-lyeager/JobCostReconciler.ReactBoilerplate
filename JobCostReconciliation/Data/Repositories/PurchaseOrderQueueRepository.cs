@@ -11,42 +11,14 @@ namespace JobCostReconciliation.Data.Repositories
 {
     public class PurchaseOrderQueueRepository : IPurchaseOrderQueueRepository
     {
-        public IQueryable<PurchaseOrderQueue> GetErroredItems()
-        {
-            using (var _db = new ProcessorDbContext())
-            {
-                return _db.PurchaseOrderQueueItems
-                    .Where(q => q.Status == QueueItemStatusType.Error);
-            }
-        }
-
-        public int CountErroredItems()
-        {
-            using (var _db = new ProcessorDbContext())
-            {
-                return _db.PurchaseOrderQueueItems
-                    .Where(q => q.Status == QueueItemStatusType.Error)
-                    .Count();
-            }
-        }
-
-        public IList<PurchaseOrderQueue> ListNew(int numberToLoad)
+        public IList<PurchaseOrderQueue> List(QueueItemStatusType queueItemStatusType)
         {
             using (var _db = new ProcessorDbContext())
             {
                 return _db.PurchaseOrderQueueItems
                     .OrderBy(o => o.Id)
-                    .Where(q => q.Status == QueueItemStatusType.New)
-                    //.Take(numberToLoad)
+                    .Where(q => q.Status == queueItemStatusType)
                     .ToList();
-            }
-        }
-
-        public int ItemsInQueue()
-        {
-            using (var _db = new ProcessorDbContext())
-            {
-                return _db.PurchaseOrderQueueItems.Count();
             }
         }
     }

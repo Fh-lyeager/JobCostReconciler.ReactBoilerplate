@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using JobCostReconciliation.Model;
-using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Services;
 
 namespace JobCostReconciliation.UI.Controllers
@@ -14,19 +13,20 @@ namespace JobCostReconciliation.UI.Controllers
     [ApiController]
     public class PurchaseOrderQueueController : ControllerBase
     {
-        //// GET: api/PurchaseOrderQueue
-        //[HttpGet]
-        //public IEnumerable<PurchaseOrderQueue> Get()
-        //{
-        //    return new List<PurchaseOrderQueue> { };
-        //}
+        // GET: api/PurchaseOrderQueue
+        [HttpGet]
+        public IEnumerable<PurchaseOrderLastRun> Get()
+        {
+            PurchaseOrderLastRunService purchaseOrderLastRunService = new PurchaseOrderLastRunService();
+            List<Model.PurchaseOrderLastRun> list = purchaseOrderLastRunService.List();
 
-        //// GET: api/PurchaseOrderQueue/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+            return Enumerable.Range(1, list.Count-1).Select(i => new Model.PurchaseOrderLastRun
+            {
+                NextRunId = list[i].NextRunId,
+                RunComplete = list[i].RunComplete,
+                Status = list[i].Status
+            });
+        }
 
         // GET: api/PurchaseOrderQueue/LastRun
         [HttpGet("[action]")]
@@ -62,7 +62,7 @@ namespace JobCostReconciliation.UI.Controllers
 
             int[] itemsInQueue = new int[]
             {
-                purchaseOrderQueueService.ItemsInQueue()
+                purchaseOrderQueueService.GetNewItems().Count
             };
 
             return itemsInQueue;
@@ -76,7 +76,7 @@ namespace JobCostReconciliation.UI.Controllers
 
             int[] failedRecords = new int[]
             {
-                purchaseOrderQueueService.CountErroredItems()
+                purchaseOrderQueueService.GetErroredItems().Count
             };
 
             return failedRecords;

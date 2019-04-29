@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using JobCostReconciliation.Model;
 
 namespace JobCostReconciliation.Interfaces.Repositories
 {
     public interface IPurchaseOrderLastRunRepository
     {
-        DateTime GetLastRunTime();
+        IList<PurchaseOrderLastRun> GetLastRuns();
 
     }
 }

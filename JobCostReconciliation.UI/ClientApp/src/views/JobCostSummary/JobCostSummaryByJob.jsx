@@ -70,7 +70,7 @@ class JobCostSearchPage extends React.Component {
             this.getJobSummary(this.refs.jobNumberInput.value);
             }
           }
-          onsubmit={() => {
+          onSubmit={() => {
             this.getJobSummary(this.refs.jobNumberInput.value);
             }
           }>

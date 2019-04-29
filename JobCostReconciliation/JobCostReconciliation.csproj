@@ -49,6 +49,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\library\Pervasive.Data.SqlClient\4.0.0.0__c84cd5c63851e072\Pervasive.Data.SqlClient.dll</HintPath>
     </Reference>
+    <Reference Include="Sentry, Version=1.1.2.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sentry.1.1.2\lib\net461\Sentry.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.PlatformAbstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sentry.PlatformAbstractions.1.0.0\lib\net45\Sentry.PlatformAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentry.Protocol, Version=1.0.3.0, Culture=neutral, PublicKeyToken=fba2ec45388e2af0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sentry.Protocol.1.0.3\lib\net46\Sentry.Protocol.dll</HintPath>
+    </Reference>
     <Reference Include="SharpRaven, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpRaven.2.4.0\lib\net45\SharpRaven.dll</HintPath>
     </Reference>
@@ -56,6 +65,9 @@
       <HintPath>..\packages\StructureMap.4.7.0\lib\net45\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -73,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Data\Clients\SentryEventClient.cs" />
     <Compile Include="ConsoleRegistry.cs" />
     <Compile Include="DataIntegrationQueueDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -96,6 +109,7 @@
     <Compile Include="Data\Repositories\WorkflowRepository.cs" />
     <Compile Include="Interfaces\Clients\IPervasiveClient.cs" />
     <Compile Include="Data\Repositories\JobCostActivityRepository.cs" />
+    <Compile Include="Interfaces\Clients\ISentryEventClient.cs" />
     <Compile Include="Interfaces\Clients\ISqlClient.cs" />
     <Compile Include="Interfaces\Repositories\ICompanyRepository.cs" />
     <Compile Include="Interfaces\Repositories\IHomeRepository.cs" />
@@ -127,7 +141,9 @@
     <Compile Include="Model\PurchaseOrderLastRun.cs" />
     <Compile Include="Model\PurchaseOrderQueue.cs" />
     <Compile Include="Model\Reconciliation.cs" />
+    <Compile Include="Model\SapphireWorkflowRequestObject.cs" />
     <Compile Include="Model\Workflow.cs" />
+    <Compile Include="Model\WorkflowQueueRequest.cs" />
     <Compile Include="Model\WorkflowQueue.cs" />
     <Compile Include="Services\DateService.cs" />
     <Compile Include="Services\ExportService.cs" />
