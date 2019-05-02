@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using JobCostReconciliation.Services;
@@ -58,6 +60,16 @@ namespace JobCostReconciler.Controllers
                 sapphireEgmTotal = Convert.ToDecimal(egmTotals[i].SapphireEgmTotal.ToString()).ToString("0.00"),
                 pervasiveEgmTotal = Convert.ToDecimal(egmTotals[i].PervasiveEgmTotal.ToString()).ToString("0.00")
             });
+        }
+
+        [HttpGet("sentry/events")]
+        public async Task<String> SentryEvents()
+        {
+            SentryEventService sentryEventService = new SentryEventService();
+            var events = await sentryEventService.GetEvents().ConfigureAwait(true);
+
+
+            return events;
         }
 
         public class JobCostSummary

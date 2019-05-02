@@ -29,6 +29,7 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
+import SVG from 'react-inlinesvg';
 import WorkflowData from "functions/Workflow.jsx";
 import { bugs, website, server } from "variables/general.jsx";
 import {
@@ -113,6 +114,10 @@ class JobCostPage extends React.Component {
     if (this.state.workflowJobSummary.length === 0) {
       this.getWorkflowJobSummary();
     }
+
+    if (this.state.sentryEvents.length === 0) {
+      this.getSentryEvents();
+    }
   }
 
   getWorkflowData() {
@@ -131,27 +136,15 @@ class JobCostPage extends React.Component {
           });
   }
 
+
+
   getSentryEvents() {
-    var url = 'https://sentry.io/api/0/projects/fischer-homes/sapphire-workflow-processor/events/?sentry_key=d6c4cc26a4a14211bde1206019bca81f';
-
-    //var url = 'https://sentry.io/api/1444156/projects/fischer-homes/sapphire-workflow-processor/events/?sentry_key=d6c4cc26a4a14211bde1206019bca81f';
-
-    var bearer = 'Bearer e2c2124126af4c28970c75a54f6975159adaf54e9971416ea2434292c53f1180';
-    var dsn = 'DSN https://d6c4cc26a4a14211bde1206019bca81f@sentry.io/1444156';
-
-    fetch(url, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'access-control-allow-credentials': true,
-        'authorization': bearer
-      }      
-    })
-      .then(response => response)
+    
+    fetch('api/JobCost/sentry/events' )
+      .then(response => response.json())
       .then(data => {
-        this.setState({ sentryEvents: Array.from(data), loadingSentryEvents: false });
-      })
-      .catch(error => { console.log(error) });
+        this.setState({ sentryEvents: data, loadingSentryEvents: false });
+      });
   }
 
   filterWorkflowQueue(workflowQueue, status) {
@@ -184,11 +177,15 @@ class JobCostPage extends React.Component {
       });
   }
 
-  renderSentryEventList(sentryEventList) {
+  static renderSentryEventList(sentryEventList) {
     return (
-      <div>
-        {sentryEventList}
-      </div>
+      <tbody>
+        {sentryEventList.map(item =>
+          <tr key={item.eventID}>
+            <td>{item.title}</td>
+          </tr>
+        )}
+      </tbody>
       )
   }
 
@@ -220,7 +217,7 @@ class JobCostPage extends React.Component {
       <tbody>
         {jobSummaryData.map(job =>
           <tr key={job.id}>
-            <td>{job.jobNumber}</td>
+            <td onClick="">{job.jobNumber}</td>
             <td>{job.sapphireEgmTotal}</td>
             <td>{job.pervasiveEgmTotal}</td>
             <td></td>
@@ -246,6 +243,8 @@ class JobCostPage extends React.Component {
     let workflowJobCostSummary = this.state.workflowJobSummary.length > 0 ? JobCostPage.renderJobCostSummary(this.state.workflowJobSummary) : [];
 
     let jobTotals = this.state.jobTotals.length > 0 ? JobCostPage.renderJobCostSummary(this.state.jobTotals) : [];
+
+    let sentryEventList = this.state.loadingSentryEvents ? [] : JobCostPage.renderSentryEventList(this.state.sentryEvents);
 
     return (
       <div>
@@ -301,7 +300,11 @@ class JobCostPage extends React.Component {
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
-                  <Accessibility />
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300.98 300.68">
+                    <title>sentry-glyph-black</title>
+                    <path d="M144.9,65.43a13.75,13.75,0,0,0-23.81,0l-19.6,33.95,5,2.87a96.14,96.14,0,0,1,47.83,77.4H140.56a82.4,82.4,0,0,0-41-65.54l-5-2.86L76.3,143l5,2.87a46.35,46.35,0,0,1,22.46,33.78H72.33a2.27,2.27,0,0,1-2-3.41l8.76-15.17a31.87,31.87,0,0,0-10-5.71L60.42,170.5a13.75,13.75,0,0,0,11.91,20.62h43.25v-5.73A57.16,57.16,0,0,0,91.84,139l6.88-11.92a70.93,70.93,0,0,1,30.56,58.26v5.74h36.65v-5.73A107.62,107.62,0,0,0,117.09,95.3L131,71.17a2.27,2.27,0,0,1,3.93,0l60.66,105.07a2.27,2.27,0,0,1-2,3.41H179.4c.18,3.83.2,7.66,0,11.48h14.24a13.75,13.75,0,0,0,11.91-20.62Z"
+                    />
+                  </svg>
                   Tracked from Sentry.io
                 </div>
               </CardFooter>
@@ -349,19 +352,16 @@ class JobCostPage extends React.Component {
                   )
                 },
                 {
-                  tabName: "Errors",
+                  tabName: "Exceptions",
                   tabIcon: Code,
                   tabContent: (
                     <table width="100%">
                       <thead>
                         <tr>
-                          <th align="left">Queue ID</th>
-                          <th align="left">WorkflowRID</th>
-                          <th align="left">RefObjRID</th>
-                          <th align="left">Status</th>
+                          <th align="left">Title</th>
                         </tr>
                       </thead>
-                      {errorQueueData}
+                      {sentryEventList}
                     </table>
                   )
                 },
