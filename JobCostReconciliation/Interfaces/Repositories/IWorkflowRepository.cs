@@ -1,9 +1,10 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using JobCostReconciliation.Model;
 
 namespace JobCostReconciliation.Interfaces.Repositories
 {
     public interface IWorkflowRepository
     {
-        DataTable GetSapphireWorkflow(string jobNumber = "");
+        List<Workflow> GetSapphireWorkflow(int homeRID = 0);
     }
 }

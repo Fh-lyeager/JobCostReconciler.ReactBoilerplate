@@ -9,5 +9,6 @@ namespace JobCostReconciliation.Interfaces.Services
     public interface IJobService
     {
         string FormatJobNumber(string jobNumber);
+        string GetJobNumberByHomeRID(int homeRID);
     }
 }

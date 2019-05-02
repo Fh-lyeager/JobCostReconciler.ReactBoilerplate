@@ -29,8 +29,13 @@ class CustomTabs extends React.Component {
       plainTabs,
       tabs,
       title,
+      headerTitle,
       rtlActive
     } = this.props;
+    const cardHeaderTitle = classNames({
+      [classes.cardHeaderTitle]: true,
+      [classes.cardHeaderTitleRTL]: rtlActive
+    });
     const cardTitle = classNames({
       [classes.cardTitle]: true,
       [classes.cardTitleRTL]: rtlActive
@@ -38,6 +43,9 @@ class CustomTabs extends React.Component {
     return (
       <Card plain={plainTabs}>
         <CardHeader color={headerColor} plain={plainTabs}>
+          {headerTitle !== undefined ? (
+            <div className={cardHeaderTitle}>{headerTitle}</div>
+            ) : null}
           {title !== undefined ? (
             <div className={cardTitle}>{title}</div>
           ) : null}
@@ -99,6 +107,7 @@ CustomTabs.propTypes = {
     "primary"
   ]),
   title: PropTypes.string,
+  headerTitle: PropTypes.string,
   tabs: PropTypes.arrayOf(
     PropTypes.shape({
       tabName: PropTypes.string.isRequired,

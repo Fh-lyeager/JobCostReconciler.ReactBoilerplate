@@ -21,7 +21,9 @@ import TableList from "views/TableList/TableList.jsx";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.jsx";
 
-import JobCostSummaryPage from "views/JobCostSummary/JobCostSummary.js";
+import JobCostPage from "views/JobCost/JobCost.jsx";
+import JobCostSearchPage from "views/JobCostSummary/JobCostSummaryByJob.jsx";
+import JobCostSummaryPage from "views/JobCostSummary/JobCostSummary.jsx";
 import PurchaseOrderPage from "views/PurchaseOrder/PurchaseOrder.jsx";
 import VariancePurchaseOrderPage from "views/VariancePurchaseOrder/VariancePurchaseOrder.jsx";
 
@@ -35,29 +37,38 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/jobcostsummary",
-    name: "Job Cost Summary",
+    path: "/jobcost",
+    name: "Job Cost",
     rtlName: "قائمة الجدول",
     icon: "content_paste",
-    component: JobCostSummaryPage,
+    component: JobCostPage,
     layout: "/admin"
     },
-    {
-        path: "/purchaseorder",
-        name: "Purchase Order",
-        rtlName: "إخطارات",
-        icon: BubbleChart,
-        component: PurchaseOrderPage,
-        layout: "/admin"
-    },
-    {
-        path: "/variancepurchaseorder",
-        name: "VPO",
-        rtlName: "إخطارات",
-        icon: Notifications,
-        component: VariancePurchaseOrderPage,
-        layout: "/admin"
-    },
+  {
+      path: "/purchaseorder",
+      name: "Purchase Order",
+      rtlName: "إخطارات",
+      icon: BubbleChart,
+      component: PurchaseOrderPage,
+      layout: "/admin"
+  },
+  {
+      path: "/variancepurchaseorder",
+      name: "VPO",
+      rtlName: "إخطارات",
+      icon: Notifications,
+      component: VariancePurchaseOrderPage,
+      layout: "/admin"
+  },
+  {
+    path: "/search",
+    name: "Search EGM",
+    rtlName: "قائمة الجدول",
+    icon: "content_paste",
+    component: JobCostSearchPage,
+    layout: "/admin"
+  }
+
 ];
 
 export default dashboardRoutes;
