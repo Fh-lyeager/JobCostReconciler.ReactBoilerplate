@@ -138,6 +138,7 @@
     <Compile Include="Model\Enums\Workflow.cs" />
     <Compile Include="Model\Home.cs" />
     <Compile Include="Model\Job.cs" />
+    <Compile Include="Model\JobVPO.cs" />
     <Compile Include="Model\PurchaseOrderLastRun.cs" />
     <Compile Include="Model\PurchaseOrderQueue.cs" />
     <Compile Include="Model\Reconciliation.cs" />

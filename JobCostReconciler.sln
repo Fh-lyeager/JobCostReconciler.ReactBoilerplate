@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobCostReconciliation", "Jo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobCostReconciliation.UI", "JobCostReconciliation.UI\JobCostReconciliation.UI.csproj", "{A0A24748-10AC-4BDD-8468-9A678F622585}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobCostReconciliation.DataContext.Sapphire", "JobCostReconciliation.DataContext.Sapphire\JobCostReconciliation.DataContext.Sapphire.csproj", "{2D21A28F-CB3A-4ED6-B969-BBA44A1B4EE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A0A24748-10AC-4BDD-8468-9A678F622585}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0A24748-10AC-4BDD-8468-9A678F622585}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A24748-10AC-4BDD-8468-9A678F622585}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D21A28F-CB3A-4ED6-B969-BBA44A1B4EE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D21A28F-CB3A-4ED6-B969-BBA44A1B4EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D21A28F-CB3A-4ED6-B969-BBA44A1B4EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D21A28F-CB3A-4ED6-B969-BBA44A1B4EE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

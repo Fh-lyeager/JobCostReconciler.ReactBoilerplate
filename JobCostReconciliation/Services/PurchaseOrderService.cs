@@ -1,5 +1,7 @@
 ﻿using JobCostReconciliation.Interfaces.Repositories;
 using JobCostReconciliation.Interfaces.Services;
+using JobCostReconciliation.Services;
+using JobCostReconciliation.Data.Repositories;
 using System;
 using System.Data;
 using System.Linq;
@@ -13,6 +15,15 @@ namespace JobCostReconciliation.Services
         private readonly IServiceLog _serviceLog;
         private readonly IExportService _exportService;
         private readonly IDateService _dateService;
+
+        public PurchaseOrderService()
+        {
+            _sapphireRepository = new SapphireRepository();
+            _purchaseOrderHeaderRepository = new PurchaseOrderHeaderRepository();
+            _serviceLog = new ServiceLog();
+            _exportService = new ExportService();
+            _dateService = new DateService();
+        }
 
         public PurchaseOrderService(ISapphireRepository sapphireRepository, IPurchaseOrderHeaderRepository purchaseOrderHeaderRepository, IServiceLog serviceLog, IExportService exportService, IDateService dateService)
         {

@@ -7,6 +7,11 @@ namespace JobCostReconciliation.Services
     {
         private readonly IServiceLog _serviceLog;
 
+        public DateService()
+        {
+            _serviceLog = new ServiceLog();
+        }
+
         public DateService(IServiceLog serviceLog)
         {
             _serviceLog = serviceLog;

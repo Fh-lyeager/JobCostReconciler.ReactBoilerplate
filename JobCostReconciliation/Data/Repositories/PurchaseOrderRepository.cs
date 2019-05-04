@@ -1,6 +1,8 @@
 ﻿using JobCostReconciliation.Interfaces.Repositories;
 using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Interfaces.Clients;
+using JobCostReconciliation.Services;
+using JobCostReconciliation.Data.Clients;
 using System.Configuration;
 using System.Data;
 using System;
@@ -12,6 +14,13 @@ namespace JobCostReconciliation.Data.Repositories
         private readonly IPervasiveClient _pervasiveClient;
         private readonly IServiceLog _serviceLog;
         private readonly IDateService _dateService;
+
+        public PurchaseOrderRepository()
+        {
+            _pervasiveClient = new PervasiveClient();
+            _serviceLog = new ServiceLog();
+            _dateService = new DateService();
+        }
 
         public PurchaseOrderRepository(IPervasiveClient pervasiveClient, IServiceLog serviceLog, IDateService dateService)
         {

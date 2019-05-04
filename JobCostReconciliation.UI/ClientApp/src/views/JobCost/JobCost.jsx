@@ -29,14 +29,7 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import SVG from 'react-inlinesvg';
 import WorkflowData from "functions/Workflow.jsx";
-import { bugs, website, server } from "variables/general.jsx";
-import {
-  dailySalesChart,
-  emailsSubscriptionChart,
-  completedTasksChart
-} from "variables/charts.jsx";
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 import 'jquery/src/jquery';
 require("jquery");
@@ -69,6 +62,10 @@ const styles = {
       fontWeight: "400",
       lineHeight: "1"
     }
+  },
+  exceptionsTable: {
+    fontSize: "12px",
+    fontWeight: "300"
   }
 };
 
@@ -293,7 +290,11 @@ class JobCostPage extends React.Component {
             <Card>
               <CardHeader color="danger" stats icon>
                 <CardIcon color="danger">
-                  <Icon>info_outline</Icon>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 265.98 249.68">
+                    <title>sentry-glyph-white</title>
+                    <path d="M144.9,65.43a13.75,13.75,0,0,0-23.81,0l-19.6,33.95,5,2.87a96.14,96.14,0,0,1,47.83,77.4H140.56a82.4,82.4,0,0,0-41-65.54l-5-2.86L76.3,143l5,2.87a46.35,46.35,0,0,1,22.46,33.78H72.33a2.27,2.27,0,0,1-2-3.41l8.76-15.17a31.87,31.87,0,0,0-10-5.71L60.42,170.5a13.75,13.75,0,0,0,11.91,20.62h43.25v-5.73A57.16,57.16,0,0,0,91.84,139l6.88-11.92a70.93,70.93,0,0,1,30.56,58.26v5.74h36.65v-5.73A107.62,107.62,0,0,0,117.09,95.3L131,71.17a2.27,2.27,0,0,1,3.93,0l60.66,105.07a2.27,2.27,0,0,1-2,3.41H179.4c.18,3.83.2,7.66,0,11.48h14.24a13.75,13.75,0,0,0,11.91-20.62Z"
+                  />
+                  </svg>
                 </CardIcon>
                 <p className={classes.cardCategory}>Exceptions</p>
                 <h3 className={classes.cardTitle}>5</h3>
@@ -355,7 +356,7 @@ class JobCostPage extends React.Component {
                   tabName: "Exceptions",
                   tabIcon: Code,
                   tabContent: (
-                    <table width="100%">
+                    <table width="100%" ref="exceptionsTable" id="exceptionsTable">
                       <thead>
                         <tr>
                           <th align="left">Title</th>

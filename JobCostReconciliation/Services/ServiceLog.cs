@@ -9,12 +9,18 @@ using System.Text;
 using JobCostReconciliation.Interfaces.Clients;
 using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Model;
+using JobCostReconciliation.Data.Clients;
 
 namespace JobCostReconciliation.Services
 {
     public class ServiceLog : IServiceLog
     {
         private readonly ISqlClient _sqlClient;
+
+        public ServiceLog()
+        {
+            _sqlClient = new SqlClient();
+        }
 
         public ServiceLog(ISqlClient sqlClient)
         {

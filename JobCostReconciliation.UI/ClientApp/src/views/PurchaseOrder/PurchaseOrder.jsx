@@ -40,8 +40,6 @@ import { purchaseOrderProcessorChart } from "variables/pocharts.jsx";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
-// https://documentation.fischermgmt.com/display/SAP/Audit+queries
-
 class PurchaseOrderPage extends React.Component {
   state = {
     value: 0,
@@ -201,10 +199,10 @@ class PurchaseOrderPage extends React.Component {
               <CardHeader color="success">
                 <ChartistGraph
                   className="ct-chart"
-                  data={purchaseOrderProcessorChart.data}
+                  data={dailySalesChart.data}
                   type="Line"
-                  options={purchaseOrderProcessorChart.options}
-                  listener={purchaseOrderProcessorChart.animation}
+                  options={dailySalesChart.options}
+                  listener={dailySalesChart.animation}
                 />
               </CardHeader>
               <CardBody>

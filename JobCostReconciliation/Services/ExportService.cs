@@ -1,14 +1,15 @@
 ﻿using JobCostReconciliation.Interfaces.Services;
 using JobCostReconciliation.Interfaces.Repositories;
 using JobCostReconciliation.Model;
+using JobCostReconciliation.Services;
+using JobCostReconciliation.Data.Repositories;
 using System;
 using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Text;
+
 namespace JobCostReconciliation
 {
     public class ExportService : IExportService
@@ -16,6 +17,13 @@ namespace JobCostReconciliation
         private readonly IJobCostActivityRepository _jobCostActivityRepository;
         private readonly IPurchaseOrderRepository _purchaseOrderRepository;
         private readonly IServiceLog _serviceLog;
+
+        public ExportService()
+        {
+            _jobCostActivityRepository = new JobCostActivityRepository();
+            _purchaseOrderRepository = new PurchaseOrderRepository();
+            _serviceLog = new ServiceLog();
+        }
 
         public ExportService(IJobCostActivityRepository jobCostActivityRepository, IPurchaseOrderRepository purchaseOrderRepository, IServiceLog serviceLog)
         {
