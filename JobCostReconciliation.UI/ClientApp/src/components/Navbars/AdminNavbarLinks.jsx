@@ -1,5 +1,5 @@
 import React from "react";
-import classNames from "classnames";
+// import classNames from "classnames";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 //import MenuItem from "@material-ui/core/MenuItem";
@@ -38,7 +38,7 @@ class HeaderLinks extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { open } = this.state;
+//    const { open } = this.state;
     return (
       <div>
         <div className={classes.searchWrapper}>

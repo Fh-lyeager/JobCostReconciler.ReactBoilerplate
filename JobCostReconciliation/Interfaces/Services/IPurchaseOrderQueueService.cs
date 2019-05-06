@@ -5,7 +5,7 @@ namespace JobCostReconciliation.Interfaces.Services
 {
     public interface IPurchaseOrderQueueService
     {
-        IList<PurchaseOrderQueue> GetErroredItems();
-        IList<PurchaseOrderQueue> GetNewItems();
+        List<PurchaseOrderQueue> GetErroredItems();
+        List<PurchaseOrderQueue> GetNewItems();
     }
 }

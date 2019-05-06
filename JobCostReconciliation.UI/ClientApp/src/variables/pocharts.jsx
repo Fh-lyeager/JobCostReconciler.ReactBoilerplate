@@ -8,8 +8,8 @@ var Chartist = require("chartist");
 // #############################
 var delays = 80,
   durations = 500;
-var delays2 = 80,
-  durations2 = 500;
+// var delays2 = 80,
+//  durations2 = 500;
 
 // ##############################
 // // // Purchase Order Processor

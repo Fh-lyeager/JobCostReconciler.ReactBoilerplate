@@ -20,14 +20,14 @@ namespace JobCostReconciliation.Services
             _purchaseOrderQueueRepository = purchaseOrderQueueRepository;
         }
 
-        public IList<PurchaseOrderQueue> GetErroredItems()
+        public List<PurchaseOrderQueue> GetErroredItems()
         {
-            return _purchaseOrderQueueRepository.List(Model.Enums.QueueItemStatusType.Error);
+            return _purchaseOrderQueueRepository.List(Model.Enums.QueueItemStatusType.Error).ToList();
         }
 
-        public IList<PurchaseOrderQueue> GetNewItems()
+        public List<PurchaseOrderQueue> GetNewItems()
         {
-            return _purchaseOrderQueueRepository.List(Model.Enums.QueueItemStatusType.New);
+            return _purchaseOrderQueueRepository.List(Model.Enums.QueueItemStatusType.New).ToList();
         }
     }
 }

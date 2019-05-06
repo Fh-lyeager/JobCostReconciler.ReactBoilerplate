@@ -7,23 +7,23 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import Store from "@material-ui/icons/Store";
-import Warning from "@material-ui/icons/Warning";
+// import Warning from "@material-ui/icons/Warning";
 import DateRange from "@material-ui/icons/DateRange";
 import LocalOffer from "@material-ui/icons/LocalOffer";
 import Update from "@material-ui/icons/Update";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
+// import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
-import Accessibility from "@material-ui/icons/Accessibility";
+// import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
 import Cloud from "@material-ui/icons/Cloud";
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
-import Table from "components/Table/Table.jsx";
+// import Table from "components/Table/Table.jsx";
 import Tasks from "components/Tasks/Tasks.jsx";
 import CustomTabs from "components/CustomTabs/CustomTabs.jsx";
-import Danger from "components/Typography/Danger.jsx";
+// import Danger from "components/Typography/Danger.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardIcon from "components/Card/CardIcon.jsx";
@@ -36,7 +36,7 @@ import {
   emailsSubscriptionChart,
   completedTasksChart
 } from "variables/charts.jsx";
-import { purchaseOrderProcessorChart } from "variables/pocharts.jsx";
+// import { purchaseOrderProcessorChart } from "variables/pocharts.jsx";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
@@ -47,8 +47,8 @@ class PurchaseOrderPage extends React.Component {
     purchaseOrderNextRun: [],
     purchaseOrderNextRuns: [],
     purchaseOrderQueueItems: [],
-      itemsInQueue: [],
-      failedRecords: []
+    itemsInQueue: [],
+    failedRecords: []
   };
   handleChange = (event, value) => {
     this.setState({ value });
@@ -67,44 +67,44 @@ class PurchaseOrderPage extends React.Component {
   }
 
   getPurchaseOrderLastRuns() {
-    fetch('api/PurchaseOrderQueue')
+    fetch("api/PurchaseOrderQueue/LastRuns")
       .then(response => response.json())
       .then(data => {
         this.setState({ purchaseOrderNextRuns: data });
       });
   }
 
-    getPurchaseOrderNextRun() {
-        fetch('api/PurchaseOrderQueue/NextRun')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ purchaseOrderNextRun: Array.from(data) });
-            });
-    }
+  getPurchaseOrderNextRun() {
+    fetch("api/PurchaseOrderQueue/NextRun")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ purchaseOrderNextRun: Array.from(data) });
+      });
+  }
 
-    getPurchaseOrderLastRun() {
-        fetch('api/PurchaseOrderQueue/LastRun')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ purchaseOrderLastRun: Array.from(data) });
-            });
-    }
+  getPurchaseOrderLastRun() {
+    fetch("api/PurchaseOrderQueue/LastRun")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ purchaseOrderLastRun: Array.from(data) });
+      });
+  }
 
-    getItemsInQueue() {
-        fetch('api/PurchaseOrderQueue/ItemsInQueue')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ itemsInQueue: Array.from(data) });
-            });
-    }
+  getItemsInQueue() {
+    fetch("api/PurchaseOrderQueue/ItemsInQueue")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ itemsInQueue: Array.from(data) });
+      });
+  }
 
-    getFailedRecords() {
-        fetch('api/PurchaseOrderQueue/FailedRecords')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ failedRecords: Array.from(data) });
-            });
-    }
+  getFailedRecords() {
+    fetch("api/PurchaseOrderQueue/FailedRecords")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ failedRecords: Array.from(data) });
+      });
+  }
 
   static renderPurchaseOrderLastRuns(purchaseOrderNextRuns, pageNumber = 1) {
     var pageSize = 8;
@@ -112,25 +112,24 @@ class PurchaseOrderPage extends React.Component {
 
     return (
       <tbody>
-        {nextRunData.map(item =>
+        {nextRunData.map(item => (
           <tr key={item.nextRunId}>
             <td>{item.nextRunId}</td>
             <td>{item.runComplete}</td>
             <td>{item.status}</td>
           </tr>
-        )}
+        ))}
       </tbody>
-      )
+    );
   }
 
+  render() {
+    const { classes } = this.props;
+    let runs = !(this.state.purchaseOrderRuns === undefined) && this.state.purchaseOrderNextRuns.length < 1 ? [] : PurchaseOrderPage.renderPurchaseOrderLastRuns(this.state.purchaseOrderNextRuns);
+    let purchaseOrderNextRun = this.state.purchaseOrderNextRun.length < 1 ? "" : this.state.purchaseOrderNextRun;
 
-    render() {
-      let classes = this.props;
-      let runs = !(this.state.purchaseOrderRuns === undefined) && this.state.purchaseOrderNextRuns.length < 1 ? [] : PurchaseOrderPage.renderPurchaseOrderLastRuns(this.state.purchaseOrderNextRuns);
-      let purchaseOrderNextRun = this.state.purchaseOrderNextRun.length < 1 ? "" : this.state.purchaseOrderNextRun;
-
-      let purchaseOrderQueue = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems;
-
+    // let purchaseOrderQueue = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems;
+    // let itemsInQueue = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems.length;
 
     return (
       <div>
@@ -141,17 +140,13 @@ class PurchaseOrderPage extends React.Component {
                 <CardIcon color="warning">
                   <Icon>content_copy</Icon>
                 </CardIcon>
-                <p className={classes.cardCategory}>Next Run</p>
-                <h3 className={classes.cardTitle}>
-                  {purchaseOrderNextRun}
-                </h3>
+                <p className={classes.cardCategory}>Items In Queue</p>
+                <h3 className={classes.cardTitle}>{this.state.itemsInQueue}</h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
                   <DateRange />
-                  <a href="#pablo" onClick={e => e.preventDefault()}>
-                    Last run {this.state.purchaseOrderLastRun}
-                  </a>
+                  Next run {purchaseOrderNextRun}
                 </div>
               </CardFooter>
             </Card>
@@ -181,7 +176,7 @@ class PurchaseOrderPage extends React.Component {
                 </CardIcon>
                 <p className={classes.cardCategory}>Errors</p>
                 <h3 className={classes.cardTitle}>
-                    {this.state.failedRecords}
+                  {this.state.failedRecords}
                 </h3>
               </CardHeader>
               <CardFooter stats>
@@ -190,6 +185,71 @@ class PurchaseOrderPage extends React.Component {
                   View
                 </div>
               </CardFooter>
+            </Card>
+          </GridItem>
+        </GridContainer>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={6}>
+            <CustomTabs
+              title="Tasks:"
+              headerColor="primary"
+              tabs={[
+                {
+                  tabName: "Bugs",
+                  tabIcon: BugReport,
+                  tabContent: (
+                    <Tasks
+                      checkedIndexes={[0, 3]}
+                      tasksIndexes={[0, 1, 2, 3]}
+                      tasks={bugs}
+                    />
+                  )
+                },
+                {
+                  tabName: "Website",
+                  tabIcon: Code,
+                  tabContent: (
+                    <Tasks
+                      checkedIndexes={[0]}
+                      tasksIndexes={[0, 1]}
+                      tasks={website}
+                    />
+                  )
+                },
+                {
+                  tabName: "Server",
+                  tabIcon: Cloud,
+                  tabContent: (
+                    <Tasks
+                      checkedIndexes={[1]}
+                      tasksIndexes={[0, 1, 2]}
+                      tasks={server}
+                    />
+                  )
+                }
+              ]}
+            />
+          </GridItem>
+          <GridItem xs={12} sm={12} md={6}>
+            <Card>
+              <CardHeader color="warning">
+                <h4 className={classes.cardTitleWhite}>Completed Runs</h4>
+                <p className={classes.cardCategoryWhite}>
+                  Next Run: {purchaseOrderNextRun}
+                </p>
+              </CardHeader>
+              <CardBody>
+                <table width="100%">
+                  <thead>
+                    <tr>
+                      <th align="left">ID</th>
+                      <th align="left">Date</th>
+                      <th align="left">Status</th>
+                    </tr>
+                  </thead>
+                  {runs}
+                </table>
+              </CardBody>
             </Card>
           </GridItem>
         </GridContainer>
@@ -208,7 +268,7 @@ class PurchaseOrderPage extends React.Component {
               <CardBody>
                 <h4 className={classes.cardTitle}>Purchase Order Processor</h4>
                 <p className={classes.cardCategory}>
-                  
+
                 </p>
               </CardBody>
               <CardFooter chart>
@@ -268,71 +328,6 @@ class PurchaseOrderPage extends React.Component {
             </Card>
           </GridItem>
         </GridContainer>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={6}>
-            <CustomTabs
-              title="Tasks:"
-              headerColor="primary"
-              tabs={[
-                {
-                  tabName: "Bugs",
-                  tabIcon: BugReport,
-                  tabContent: (
-                    <Tasks
-                      checkedIndexes={[0, 3]}
-                      tasksIndexes={[0, 1, 2, 3]}
-                      tasks={bugs}
-                    />
-                  )
-                },
-                {
-                  tabName: "Website",
-                  tabIcon: Code,
-                  tabContent: (
-                    <Tasks
-                      checkedIndexes={[0]}
-                      tasksIndexes={[0, 1]}
-                      tasks={website}
-                    />
-                  )
-                },
-                {
-                  tabName: "Server",
-                  tabIcon: Cloud,
-                  tabContent: (
-                    <Tasks
-                      checkedIndexes={[1]}
-                      tasksIndexes={[0, 1, 2]}
-                      tasks={server}
-                    />
-                  )
-                }
-              ]}
-            />
-          </GridItem>
-          <GridItem xs={12} sm={12} md={6}>
-            <Card>
-              <CardHeader color="warning">
-                <h4 className={classes.cardTitleWhite}>Completed Runs</h4>
-                <p className={classes.cardCategoryWhite}>
-                  New employees on 15th September, 2016
-                </p>
-              </CardHeader>
-              <CardBody>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th align="left">ID</th>
-                      <th align="left">Date</th>
-                      <th align="left">Status</th>
-                    </tr>
-                  </thead>
-                  {runs}
-                </table>
-              </CardBody>
-            </Card>
-          </GridItem>
-        </GridContainer>
       </div>
     );
   }
@@ -341,7 +336,5 @@ class PurchaseOrderPage extends React.Component {
 PurchaseOrderPage.propTypes = {
     classes: PropTypes.object.isRequired
 };
-
-//var lastRunTime = <div>{PurchaseOrderPage.purchaseOrderLastRun}</div>
 
 export default withStyles(dashboardStyle)(PurchaseOrderPage);

@@ -13,9 +13,12 @@ namespace JobCostReconciliation.UI.Controllers
     [ApiController]
     public class PurchaseOrderQueueController : ControllerBase
     {
-        // GET: api/PurchaseOrderQueue
-        [HttpGet]
-        public IEnumerable<PurchaseOrderLastRun> Get()
+
+        #region NextRun
+
+        // GET: api/PurchaseOrderQueue/LastRuns
+        [HttpGet("[action]")]
+        public IEnumerable<PurchaseOrderLastRun> LastRuns()
         {
             PurchaseOrderLastRunService purchaseOrderLastRunService = new PurchaseOrderLastRunService();
             List<Model.PurchaseOrderLastRun> list = purchaseOrderLastRunService.List();
@@ -48,11 +51,13 @@ namespace JobCostReconciliation.UI.Controllers
             PurchaseOrderProcessorNextRun purchaseOrderProcessorNextRun = new PurchaseOrderProcessorNextRun();
             string[] nextRunArray = new string[]
             {
-                purchaseOrderProcessorNextRun.NextRun.ToString("M/d/yyyy hh:mm:ss")
+                purchaseOrderProcessorNextRun.NextRun.ToString("M/d/yyyy h:mm:ss")
             };
 
             return nextRunArray;
         }
+
+        #endregion
 
         // GET: api/PurchaseOrderQueue/ItemsInQueue
         [HttpGet("[action]")]
@@ -81,6 +86,43 @@ namespace JobCostReconciliation.UI.Controllers
 
             return failedRecords;
         }
+
+
+        // GET: api/PurchaseOrderQueue
+        [HttpGet]
+        public IEnumerable<PurchaseOrderQueue> Get()
+        {
+            PurchaseOrderQueueService purchaseOrderQueueService = new PurchaseOrderQueueService();
+            List<PurchaseOrderQueue> queue = purchaseOrderQueueService.GetNewItems();
+
+            return Enumerable.Range(1, queue.Count - 1).Select(i => new PurchaseOrderQueue
+            {
+                Activity = queue[i].Activity,
+                ApprovePaymentDate = queue[i].ApprovePaymentDate,
+                CancelledDate = queue[i].CancelledDate,
+                ESubmittalDate = queue[i].ESubmittalDate,
+                JobNo = queue[i].JobNo,
+                JobPOStatus = queue[i].JobPOStatus,
+                JobRID = queue[i].JobRID,
+                LoadDateTime = queue[i].LoadDateTime,
+                PaymentAmount = queue[i].PaymentAmount,
+                ReleaseDate = queue[i].ReleaseDate,
+                SapphireLastUpdated = queue[i].SapphireLastUpdated,
+                SapphireObjRId = queue[i].SapphireObjRId,
+                SapphirePONumber = queue[i].SapphirePONumber,
+                SiteNumber = queue[i].SiteNumber,
+                Subtotal = queue[i].Subtotal,
+                Tax = queue[i].Tax,
+                TaxableAmount = queue[i].TaxableAmount,
+                TaxRate = queue[i].TaxRate,
+                Total = queue[i].Total,
+                Vendorid = queue[i].Vendorid,
+                Status = queue[i].Status
+            });
+        }
+
+
+
 
         public class PurchaseOrderProcessorNextRun
         {

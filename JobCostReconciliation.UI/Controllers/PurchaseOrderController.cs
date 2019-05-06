@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using JobCostReconciliation.Services;
-using JobCostReconciliation.Model;
-using JobCostReconciliation.DataContext.Sapphire.Model;
 
 namespace JobCostReconciliation.UI.Controllers
 {
