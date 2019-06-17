@@ -205,16 +205,10 @@ class JobCostPage extends React.Component {
   render() {
     const { classes } = this.props;
 
-    let numberWorkflows = this.state.loadingWorkflows
-      ? ""
-      : this.state.workflows.length;
-
-    let queueData = this.state.loadingWorkflowQueue
-      ? []
-      : JobCostPage.renderWorkflowQueue(this.state.workflowQueue);
-    let numberWorkflowsProcessed = this.state.loadingWorkflowQueue
-      ? ""
-      : this.state.workflowQueue.length;
+    let numberWorkflows = this.state.loadingWorkflows ? "" : this.state.workflows.length;
+    let queueData = this.state.loadingWorkflowQueue ? [] : JobCostPage.renderWorkflowQueue(this.state.workflowQueue);
+    let queueDataCount = this.state.loadingWorkflowQueue ? "" : this.state.workflowQueue.length;
+    let numberWorkflowsProcessed = this.state.loadingWorkflowQueue ? "" : this.state.workflowQueue.length;
 
     // let numberWorkflowsNew = this.state.loadingWorkflowQueue ? [] : this.filterWorkflowQueue(this.state.workflowQueue, "New").length;
     let numberWorkflowsError = this.state.loadingWorkflowQueue
@@ -248,7 +242,9 @@ class JobCostPage extends React.Component {
                   </Icon>
                 </CardIcon>
                 <p className={classes.cardCategory}>Workflows Processed</p>
-                <h3 className={classes.cardTitle}>{numberWorkflowsProcessed}</h3>
+                <h3 className={classes.cardTitle}>
+                  {numberWorkflowsProcessed}
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -265,9 +261,7 @@ class JobCostPage extends React.Component {
                   <Queue />
                 </CardIcon>
                 <p className={classes.cardCategory}>Items In Queue</p>
-                <h3 className={classes.cardTitle}>
-                  
-                </h3>
+                <h3 className={classes.cardTitle}>{queueDataCount}</h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>

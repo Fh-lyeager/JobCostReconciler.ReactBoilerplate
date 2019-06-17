@@ -47,7 +47,6 @@ class PurchaseOrderPage extends React.Component {
     purchaseOrderNextRun: [],
     purchaseOrderNextRuns: [],
     purchaseOrderQueueItems: [],
-    itemsInQueue: [],
     failedRecords: []
   };
   handleChange = (event, value) => {
@@ -108,7 +107,10 @@ class PurchaseOrderPage extends React.Component {
 
   static renderPurchaseOrderLastRuns(purchaseOrderNextRuns, pageNumber = 1) {
     var pageSize = 8;
-    var nextRunData = purchaseOrderNextRuns.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+    var nextRunData = purchaseOrderNextRuns.slice(
+      (pageNumber - 1) * pageSize,
+      pageNumber * pageSize
+    );
 
     return (
       <tbody>
@@ -125,11 +127,11 @@ class PurchaseOrderPage extends React.Component {
 
   render() {
     const { classes } = this.props;
-    let runs = !(this.state.purchaseOrderRuns === undefined) && this.state.purchaseOrderNextRuns.length < 1 ? [] : PurchaseOrderPage.renderPurchaseOrderLastRuns(this.state.purchaseOrderNextRuns);
+    let runs = !(this.state.purchaseOrderNextRuns === undefined) && this.state.purchaseOrderNextRuns.length < 1 ? [] : PurchaseOrderPage.renderPurchaseOrderLastRuns(this.state.purchaseOrderNextRuns);
     let purchaseOrderNextRun = this.state.purchaseOrderNextRun.length < 1 ? "" : this.state.purchaseOrderNextRun;
 
-    // let purchaseOrderQueue = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems;
-    // let itemsInQueue = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems.length;
+    let purchaseOrderQueueData = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems;
+    let itemsInQueue = this.state.purchaseOrderQueueItems.length < 1 ? [] : this.state.purchaseOrderQueueItems.length;
 
     return (
       <div>
@@ -185,6 +187,31 @@ class PurchaseOrderPage extends React.Component {
                   View
                 </div>
               </CardFooter>
+            </Card>
+          </GridItem>
+        </GridContainer>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader>
+                <h4 className={classes.cardTitleWhite}>Queue Items</h4>
+                <p className={classes.cardCategoryWhite}>
+                  Items In Queue: {itemsInQueue}
+                </p>
+              </CardHeader>
+              <CardBody>
+                <table width="100%">
+                  <thead>
+                    <tr>
+                      <th align="left">ID</th>
+                      <th align="left">Purchase Order</th>
+                      <th align="left">Date Approved</th>
+                      <th align="left">Approval Date</th>
+                    </tr>
+                  </thead>
+                  {purchaseOrderQueueData}
+                </table>
+              </CardBody>
             </Card>
           </GridItem>
         </GridContainer>
@@ -267,9 +294,7 @@ class PurchaseOrderPage extends React.Component {
               </CardHeader>
               <CardBody>
                 <h4 className={classes.cardTitle}>Purchase Order Processor</h4>
-                <p className={classes.cardCategory}>
-
-                </p>
+                <p className={classes.cardCategory} />
               </CardBody>
               <CardFooter chart>
                 <div className={classes.stats}>
@@ -334,7 +359,7 @@ class PurchaseOrderPage extends React.Component {
 }
 
 PurchaseOrderPage.propTypes = {
-    classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(dashboardStyle)(PurchaseOrderPage);
